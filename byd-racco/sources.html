@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sources · BYD Racco</title>
+<style>
+/* Mirrors remotion/src/theme.ts. A viewer taps from a short straight to
+   this page; two palettes read as two publications, and the whole point
+   of the link is that it is the same one. The contrast ratios there were
+   measured, not estimated — carry the values, do not re-pick them by eye.
+   `--ink-3` in particular replaces a warm grey that ran near 3.5:1 on
+   small uppercase labels, the same failure theme.ts records for #909090. */
+/* --soft is a fill (code, tints); --hair is the lighter internal rule.
+   They were one warm token before, which on white made the internal
+   hairlines fainter than the warm original measured. */
+:root{--bg:#FFFFFF;--card:#FFFFFF;--line:#BFBFBF;--soft:#F4F4F4;--hair:#E0E0E0;
+  --ink:#000000;--ink-2:#3D3D3D;--ink-3:#5A5A5A;--accent:#0546A8;--ok:#0A5F2F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+  "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px 90px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 9px}
+h1{font-size:31px;line-height:1.15;margin:0 0 12px;letter-spacing:-.018em}
+.lede{color:var(--ink-2);margin:0;max-width:66ch}
+h2{font-size:14px;font-family:ui-monospace,monospace;letter-spacing:.13em;
+  text-transform:uppercase;margin:44px 0 14px;padding-top:18px;
+  border-top:1px solid var(--ink)}
+/* Hairlines come from the cells, not from a gap over a coloured
+   container. With auto-fit, a row that does not divide evenly leaves
+   empty tracks, and those tracks paint the container background as a
+   solid block — four stats over three columns on a phone. Bordering
+   each cell wraps cleanly at any count and any width. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:0;margin:22px 0;border:1px solid var(--line);border-width:1px 0 0 1px}
+.stat{background:var(--card);padding:15px 17px;
+  border:1px solid var(--line);border-width:0 1px 1px 0}
+.stat b{display:block;font-size:23px;font-variant-numeric:tabular-nums;
+  font-family:ui-monospace,monospace}
+.stat span{font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-family:ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:400;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--hair);
+  color:var(--ink-2);vertical-align:top}
+td a{color:var(--accent)}
+.num{font-family:ui-monospace,monospace;text-align:right;font-variant-numeric:tabular-nums}
+.q{background:var(--card);border:1px solid var(--line);padding:15px 17px;
+  margin-bottom:11px}
+.q-text{font-size:16px;line-height:1.5;margin:0 0 10px}
+.q-meta{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--hair);padding-top:9px}
+.q-meta a{color:var(--accent);text-decoration:none}
+.q-meta a:hover{text-decoration:underline}
+.note{border-left:2px solid var(--accent);background:#F1F5FB;padding:15px 19px;
+  margin:22px 0;font-size:15px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.note.ok{border-left-color:var(--ok);background:#F0F7F2}
+code{font-family:ui-monospace,monospace;font-size:13px;background:var(--soft);
+  padding:1px 5px}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:13.5px}
+
+/* ── report ─────────────────────────────────────────────────
+   Charts are embedded as data URIs so a page is one file with no
+   second request that can 404. A wide chart scrolls inside its own
+   box rather than widening the page — the scatter is unreadable
+   below about 700px and squeezing it to fit helps nobody. */
+figure{margin:24px 0}
+figure .scroll{overflow-x:auto;border:1px solid var(--line)}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figure.wide img{min-width:860px}
+figcaption{font-size:13.5px;color:var(--ink-3);margin-top:9px;max-width:70ch}
+.finding{border-left:2px solid var(--accent);padding:2px 0 2px 17px;margin:26px 0}
+.finding h3{font-size:19px;margin:0 0 7px;letter-spacing:-.01em;line-height:1.25}
+.finding p{margin:0;color:var(--ink-2)}
+.group{margin:34px 0 0}
+.group>h3{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--hair)}
+.theme{border:1px solid var(--line);padding:15px 17px;margin-bottom:11px}
+.theme-top{display:flex;justify-content:space-between;gap:14px;
+  align-items:baseline;flex-wrap:wrap}
+.theme h4{font-size:16.5px;margin:0 0 6px;letter-spacing:-.01em}
+.theme .sum{color:var(--ink-2);font-size:14.5px;margin:0 0 11px}
+.bar{display:flex;height:7px;margin:11px 0 9px;overflow:hidden}
+.bar i{display:block}
+.bar .p{background:var(--ok)}
+.bar .u{background:var(--ink-3)}
+.bar .n{background:#A81C19}
+.theme-meta{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);display:flex;gap:13px;flex-wrap:wrap}
+.pill{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--line);padding:2px 7px;
+  color:var(--ink-3);white-space:nowrap}
+.pill.warn{border-color:#8A5A00;color:#8A5A00}
+blockquote{margin:11px 0 0;padding:11px 0 0;border-top:1px solid var(--hair);
+  font-size:15px;line-height:1.5;color:var(--ink)}
+blockquote .src{display:block;font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);margin-top:7px}
+blockquote .src a{color:var(--accent);text-decoration:none}
+blockquote .src a:hover{text-decoration:underline}
+.toc{margin:22px 0 0;padding:0;list-style:none;columns:2;column-gap:26px}
+.toc li{margin-bottom:6px;font-size:14.5px;break-inside:avoid}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+@media(max-width:560px){.toc{columns:1}
+  h1{font-size:26px}
+  .wrap{padding:34px 18px 70px}}
+</style></head><body><div class="wrap">
+
+<header>
+  <p class="eyebrow">Check the work</p>
+  <h1>Every number and quote behind the BYD Racco analysis</h1>
+  <p class="lede">
+    Nothing here asks to be believed. Every comment below links to the
+    original on YouTube — click one and you will land on that exact
+    comment, on that exact video, with its like count visible. A quote
+    that was invented would not resolve.
+  </p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>15,950</b><span>comments fetched</span></div>
+  <div class="stat"><b>46</b><span>videos</span></div>
+  <div class="stat"><b>14,821</b><span>analysed</span></div>
+  <div class="stat"><b>200</b><span>quotes linked</span></div>
+</div>
+
+<div class="note ok">
+  <b>How to verify a quote.</b> Click any “open on YouTube” link. YouTube
+  will load that video and scroll to the comment. Compare the text and the
+  like count with what is shown here. Like counts drift over time — the
+  numbers here are from 2026-08-23,
+  so expect small differences on popular comments.
+</div>
+
+<h2>Source videos</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Every video whose comment section was read. The comment counts are what
+  YouTube reported at fetch time; ours include replies, which YouTube's
+  headline number excludes.
+</p>
+<table>
+  <thead><tr><th>video</th><th>channel</th>
+    <th class="num">comments</th><th class="num">id</th></tr></thead>
+  <tbody><tr><td><a href='https://www.youtube.com/watch?v=GNtAVGSGYKc' target='_blank' rel='noopener'>【BYD「ラッコ」試乗】悔しいですが、「本音」です！乗ったらドイツ車でした！</a></td><td>車とバイク</td><td class='num'>1,770</td><td class='num'><code>GNtAVGSGYKc</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=fDpkvmHcasc' target='_blank' rel='noopener'>BYD ラッコ【レビュー＆試乗】新たなる黒船襲来で賛否両論!? 炎上中の気になる仕上がりは!? E-CarLife with 五味やすたか</a></td><td>E-CarLife with 五味やすたか</td><td class='num'>1,505</td><td class='num'><code>fDpkvmHcasc</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=2vToMUq6M80' target='_blank' rel='noopener'>「軽なのに重厚」BYDラッコはN-BOXに勝てるか？開発担当者と超速試乗レビュー！スピード開発の裏側とは？</a></td><td>テレ東BIZ ダイジェスト</td><td class='num'>1,441</td><td class='num'><code>2vToMUq6M80</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=kiMV9O0c5I4' target='_blank' rel='noopener'>【軽EVと軽ターボ】BYDラッコとN-BOXカスタムの乗り心地や走りの違いを比較してみた！【藤トモCHECK】</a></td><td>driver channel</td><td class='num'>791</td><td class='num'><code>kiMV9O0c5I4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=35FzbTvcckk' target='_blank' rel='noopener'>【完成度高すぎっ!】BYDラッコを試乗したぞ!驚きの乗り心地に感動!【BYD RACCO Test Drive Review】案件ではありません#racco</a></td><td>Plant Moon Rider/ぷらむん</td><td class='num'>658</td><td class='num'><code>35FzbTvcckk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=GV4T3FPE4c4' target='_blank' rel='noopener'>「軽自動車とは思えない」BYD初の軽EV「ラッコ」が狙うのはトヨタ・ホンダの登録車【志賀見聞録】</a></td><td>ダイヤモンド公式チャンネル</td><td class='num'>657</td><td class='num'><code>GV4T3FPE4c4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=wSvOqsLRwTw' target='_blank' rel='noopener'>【BYDの下回りを見てきた整備士が本音】軽EV「RACCO」…正直、これは売れるかもしれない</a></td><td>大林モータース</td><td class='num'>648</td><td class='num'><code>wSvOqsLRwTw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=NsjOPsVYNvw' target='_blank' rel='noopener'>【BYDラッコ試乗】この完成度は反則です!正直ナメていました…乗って分かった本当の実力!日産サクラ/N-ONE e/N-BOXと比較!軽EV初のスライドドア</a></td><td>Plant Moon Rider/ぷらむん</td><td class='num'>619</td><td class='num'><code>NsjOPsVYNvw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=eUV9ua8HxPg' target='_blank' rel='noopener'>【ラッコ！】BYD RACCO インテリアまで全部見えた！ 噂のスーパーハイト軽EVは圧巻の作り！【JMS2025】</a></td><td>LOVECARS!TV!</td><td class='num'>599</td><td class='num'><code>eUV9ua8HxPg</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=T_gxeSHTYd4' target='_blank' rel='noopener'>【BYDラッコ】中国の本気がヤバい!軽EV初のスライドドア!内外装紹介【BYD RACCO Exterior &amp; Interior】#racco #bydラ</a></td><td>Plant Moon Rider/ぷらむん</td><td class='num'>584</td><td class='num'><code>T_gxeSHTYd4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ZAmIKwN7440' target='_blank' rel='noopener'>中国製軽自動車の衝撃！BYDラッコは日本で売れるのか？11年連続軽販売NO.1のホンダN-BOXと比較してみた！</a></td><td>ベストカーチャンネル</td><td class='num'>522</td><td class='num'><code>ZAmIKwN7440</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=5uX3qvOs3JU' target='_blank' rel='noopener'>【ラッコ炎上】BYDラッコのバッテリーが剥き出し？サクラオーナーの私が真実をお見せします！【サクラ/bZ4X/RAV4GRS バッテリー公開】</a></td><td>INATES /いなかテスラ</td><td class='num'>522</td><td class='num'><code>5uX3qvOs3JU</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=XLCdt3teMS0' target='_blank' rel='noopener'>【新車】BYDのRACCO(ラッコ)試乗！なんか想定以上に売れてません？？</a></td><td>EV Life Japan</td><td class='num'>516</td><td class='num'><code>XLCdt3teMS0</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=3DGsdzWJG7k' target='_blank' rel='noopener'>【買ってもイイの？】BYD ラッコ 比較試乗vsN-BOX！ 装備コスパは圧倒的だが気になるバタバタ感も</a></td><td>小沢コージのKozziTV</td><td class='num'>492</td><td class='num'><code>3DGsdzWJG7k</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=4rfASBLdFIg' target='_blank' rel='noopener'>【公道初試乗】BYD 新型ラッコ、その走りは本物かチェック!! 内外装で話題の一台、第一印象は？ #byd #電気自動車</a></td><td>LOVECARS!TV!</td><td class='num'>480</td><td class='num'><code>4rfASBLdFIg</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=7mZoSglfB70' target='_blank' rel='noopener'>【価格発表】BYDラッコ、日本メーカー終了…ではない。本当の危機が始まった!NHK「インサイド トヨタ」を見て納得!中国初の軽EV【BYD RACCO Ex</a></td><td>Plant Moon Rider/ぷらむん</td><td class='num'>462</td><td class='num'><code>7mZoSglfB70</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=-T3n4Rpty6Y' target='_blank' rel='noopener'>【BYDラッコ】実物レビュー「日本は負けたか？」欠点もあった！</a></td><td>車とバイク</td><td class='num'>456</td><td class='num'><code>-T3n4Rpty6Y</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=vHnliPbKnAs' target='_blank' rel='noopener'>【衝撃の事実】BYDラッコ「最低地上高130mm」を実測!実は130mmではなかった!?下回りと足回りを実車で検証!大炎上の真相は意外な結果に…【BYD R</a></td><td>Plant Moon Rider/ぷらむん</td><td class='num'>390</td><td class='num'><code>vHnliPbKnAs</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=XHqCEh57Eb4' target='_blank' rel='noopener'>【本当に大丈夫？】中国BYD新型軽自動車ラッコ！懸念点と補助金に対する購入について忖度無しリアル解説</a></td><td>車の維持・節約ch【元ディーラー営業マンが語るリアル情報】</td><td class='num'>389</td><td class='num'><code>XHqCEh57Eb4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=DVsWdRUmIA0' target='_blank' rel='noopener'>【家族ぶちギレ】BYDラッコの購入をやめる人続出‥「買う寸前で目が覚めた」…契約直前でやめた15人のリアルな理由</a></td><td>口コミ経済学【企業・商品・市場の口コミ】</td><td class='num'>309</td><td class='num'><code>DVsWdRUmIA0</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=RLY-w8PNDO8' target='_blank' rel='noopener'>BYD New $13k Japanese Kei Car | Car Tour</a></td><td>Yamada Anthony</td><td class='num'>237</td><td class='num'><code>RLY-w8PNDO8</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=TpNOC1Mgy2o' target='_blank' rel='noopener'>【ひろゆき】中国自動車メーカーBYDは、結構すごいので日本も要注意【切り抜き】#shorts</a></td><td>ひろゆきのショート</td><td class='num'>232</td><td class='num'><code>TpNOC1Mgy2o</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=S4E_oLEsV4E' target='_blank' rel='noopener'>【BYDラッコは本当に危険？】「電池剥き出し」「腹打ちで保証終了」説をBYDジャパンに直接確認してみた</a></td><td>EVネイティブ【日本一わかりやすい電気自動車チャンネル】</td><td class='num'>230</td><td class='num'><code>S4E_oLEsV4E</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=3r-NkuIEEz8' target='_blank' rel='noopener'>竹岡 圭とBYD ラッコ初試乗「電気の力で広がる軽トールワゴンの未来形」【TAKEOKA KEI ×BYD RACCO】</a></td><td>圭Tube☆竹岡圭のカートークバラエティ☆</td><td class='num'>193</td><td class='num'><code>3r-NkuIEEz8</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=i7JwGNw1oaM' target='_blank' rel='noopener'>話題のBYDラッコ、新東名でアクセル本気で踏んでみた #byd #bydラッコ #中国ev</a></td><td>EVネイティブ【日本一わかりやすい電気自動車チャンネル】</td><td class='num'>172</td><td class='num'><code>i7JwGNw1oaM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=mD6mOqnn8dU' target='_blank' rel='noopener'>【補助金込み199.5万円】BYD ラッコ試乗！軽EVの○と×を本音レビュー</a></td><td>Gocarの新くるま情報</td><td class='num'>167</td><td class='num'><code>mD6mOqnn8dU</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=hMj4Numfym8' target='_blank' rel='noopener'>BYDラッコ 受注1000台の裏で、伸び率6割減だった件</a></td><td>ずんチャン『ずんだもんチャンネル』</td><td class='num'>134</td><td class='num'><code>hMj4Numfym8</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=2fPMkWMpjEo' target='_blank' rel='noopener'>BYD Racoo is BIG TROUBLE for Japan</a></td><td>Mike the Car Geek</td><td class='num'>133</td><td class='num'><code>2fPMkWMpjEo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ZK4z-WkfMSQ' target='_blank' rel='noopener'>BYD RACCO（ラッコ）を試乗｜内外装を細部までチェック(補助金込み100万円台〜)</a></td><td>EVsmart</td><td class='num'>114</td><td class='num'><code>ZK4z-WkfMSQ</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=kHp8B_-caVo' target='_blank' rel='noopener'>BYD Reveal Cheap Kei Car - The Brands Cheapest EV EVER</a></td><td>The Electric Viking</td><td class='num'>91</td><td class='num'><code>kHp8B_-caVo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=AfWfYGFMEGk' target='_blank' rel='noopener'>【日産サクラ乗りが試乗】BYD RACCO（ラッコ）本音レビュー！走りの「良い部分」と「うーん…な部分」を徹底解説！ホンダN-BOX EVへの影響も考察【B</a></td><td>わたしたちとSAKURA</td><td class='num'>73</td><td class='num'><code>AfWfYGFMEGk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=X7XejNiLm_k' target='_blank' rel='noopener'>なにかと話題のBYD「RACCO」/ラッコ　#吉田由美ちゃんねる　#yumiyoshida #shorts  #short #byd #racco</a></td><td>yumi yoshida【吉田由美ちゃんねる】</td><td class='num'>72</td><td class='num'><code>X7XejNiLm_k</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=L-cEiVtJE14' target='_blank' rel='noopener'>2026 BYD Racco Surprises Japan As The BYD’s First Kei Car : Interior &amp; Specs E</a></td><td>OTOFOOTAGE</td><td class='num'>68</td><td class='num'><code>L-cEiVtJE14</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=rLvbFELVoYo' target='_blank' rel='noopener'>大好評炎上中のBYD ラッコ試乗してきました！　月刊ラッコ8月号 racco 電気自動車 EV</a></td><td>さざ波チャンネル</td><td class='num'>67</td><td class='num'><code>rLvbFELVoYo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=9V0kx5g3vrg' target='_blank' rel='noopener'>【視聴者も興奮】あの有名自動車ジャーナリストがついにBYDラッコ試乗！冒頭から「中国車嫌いは見るな」国沢節全開のレビューが話題に</a></td><td>口コミ経済学【企業・商品・市場の口コミ】</td><td class='num'>34</td><td class='num'><code>9V0kx5g3vrg</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=6t2JBq_XmA0' target='_blank' rel='noopener'>⚡️ SMALLEST BYD YET with 180 km range! BYD Racco kei car First Look | Japan Mo</a></td><td>carandbike</td><td class='num'>25</td><td class='num'><code>6t2JBq_XmA0</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=I8lZt-bz3rI' target='_blank' rel='noopener'>Japan Is Shocked! BYD Launches $17,000 Kei EV to Challenge Toyota!</a></td><td>Fresh Discovery</td><td class='num'>22</td><td class='num'><code>I8lZt-bz3rI</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=SdIjxRE8IrQ' target='_blank' rel='noopener'>中国EVの夢、崩壊寸前!? BYDラッコに日本人が見切り…注文キャンセル続出の衝撃！</a></td><td>日本車の魂</td><td class='num'>17</td><td class='num'><code>SdIjxRE8IrQ</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=vwCQ9lV1BPA' target='_blank' rel='noopener'>BYD Racco #cochesnet #coches #BYD #BYDRacco #japanmobilityshow #shorts #keicar</a></td><td>coches.net</td><td class='num'>16</td><td class='num'><code>vwCQ9lV1BPA</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=22XbJNv9TEk' target='_blank' rel='noopener'>BYD Racco vs Honda Super-ONE: Japanese EV Reality Check</a></td><td>AmazingEV</td><td class='num'>14</td><td class='num'><code>22XbJNv9TEk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=1ePKhWIaUvA' target='_blank' rel='noopener'>From China to Japan - BYD&#x27;s Bold $20k Gamble</a></td><td>carsales</td><td class='num'>12</td><td class='num'><code>1ePKhWIaUvA</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=vooe3HMweLQ' target='_blank' rel='noopener'>【衝撃】BYD軽EV「ラッコ」に想定外の壁！日本市場で見えてきた“誤算”と中国EVの今後とは?</a></td><td>Sun</td><td class='num'>11</td><td class='num'><code>vooe3HMweLQ</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=Q6aVRsKW8qo' target='_blank' rel='noopener'>BYD RACCO Is Coming for Japan&#x27;s K-Car Market... Will It Actually Sell?</a></td><td>Vision Effect TV</td><td class='num'>3</td><td class='num'><code>Q6aVRsKW8qo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=uX_ZVrSo97U' target='_blank' rel='noopener'>【衝撃】BYDラッコの欠点がヤバい!? #shorts</a></td><td>NGHIEN CAR</td><td class='num'>3</td><td class='num'><code>uX_ZVrSo97U</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=qSm85zF3ZPM' target='_blank' rel='noopener'>BYD ラッコのオーナーが感じた不満点・満足点！内外装 スペック 価格 納期 納車 見積り 商談受注 補助金 #racco #shorts #中国</a></td><td>Perspective Driving</td><td class='num'>0</td><td class='num'><code>qSm85zF3ZPM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=2mktbFkHMyA' target='_blank' rel='noopener'>BYD Racco Electric Kei Car Launched in Japan - Price From 2.145 million yen - </a></td><td>NIK&#x27;S AUTOMOTIVE</td><td class='num'>0</td><td class='num'><code>2mktbFkHMyA</code></td></tr></tbody>
+</table>
+
+<h2>Quoted comments · 200</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Ranked by likes. Every quote used anywhere in the analysis, its charts
+  or its threads appears here with a link to its source.
+</p>
+<div class="q">
+          <p class="q-text">すいません、日本の事は好きですが 単純に走りとクオリティは認めないとフェアではないでしょう 車好きに響きそうで、コレは怖いですよ</p>
+          <div class="q-meta">
+            <span>381 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=UgxI-C41j1hsqCoF1F14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そこまで惚れたなら買えば良いじゃん!</p>
+          <div class="q-meta">
+            <span>311 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=UgxGfAp1xTFw4Kp0gzl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私も木曜日に試乗して内外装と走りの質感の高さに驚愕しました やはりBYDは一時期数百社もの競合が乱立した超レッドオーシャンを勝ち抜いた企業だけに強いですよ 共同開発やOEM供給で徹底して最適化され、コストカットし利益を最大化した日本の軽自動車に比べ ラッコは普通車を試行錯誤して小さくしたような手の抜きどころを知らない初々しさを感じました かつて国産メーカーが一台のクルマに夢や技術をありったけ詰め込もうとした1990年代の熱量の感じ、懐かしいです</p>
+          <div class="q-meta">
+            <span>310 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=UgxmDgsgN8GgvDQ02YR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">車重考えりゃ判るだろ 重厚じゃなくて重いんだよバッテリの分</p>
+          <div class="q-meta">
+            <span>269 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=UgwyfH_42Em8aU72dh54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">BYDラッコを試乗してみたくなった方はGOODボタン👍</p>
+          <div class="q-meta">
+            <span>245 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=NsjOPsVYNvw&lc=UgynsF_UfDyahzoXoDZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">この手の提灯動画増えたな。信用しない</p>
+          <div class="q-meta">
+            <span>243 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=UgwAQUPdS58_CtSFGgR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">勿論、購入されるんですよね?</p>
+          <div class="q-meta">
+            <span>231 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=Ugym9knU2RvF9CDWvfh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">近頃BYDを褒めて勧める動画が多くうpされてるけど、例外無くコメント欄がご覧の有様で草</p>
+          <div class="q-meta">
+            <span>206 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=UgxRW8zJDWj30Qg9e-l4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">まあ色んな意味で国産メーカーの良い刺激になってくれればと😅</p>
+          <div class="q-meta">
+            <span>204 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=fDpkvmHcasc&lc=UgyzXhPOCH-A0voCwLZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">下周りの話しないなら意味がないのでは</p>
+          <div class="q-meta">
+            <span>180 likes</span>
+            <span>大林モータース</span>
+            <a href="https://www.youtube.com/watch?v=wSvOqsLRwTw&lc=UgyhP_Ap3UMl9jbsDEl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">こういうのは日本メーカーが先に出してほしかったなあ。 ガソリンスタンドが近隣にない田舎も増えてきているし、それでいて長距離は走行しない需要って地方に結構あります。そういう仮定には低価格の軽サイズのEVの需要はしっかりとあるはず。</p>
+          <div class="q-meta">
+            <span>170 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=UgwGzW9yZRC6UoMdpzJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">自分も今日試乗してきました。おっしゃる通りこの質感は軽じゃないですね。エクステリア、装備、乗り味、すべてにおいてです。ソリオも乗ったことあるけど、大きさ以外はこちらの方が車格が上に感じるくらいです。</p>
+          <div class="q-meta">
+            <span>144 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=NsjOPsVYNvw&lc=UgyiRmUzFKuuGJNmKpd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">一目見た感じですが、完成度高そうですね!</p>
+          <div class="q-meta">
+            <span>138 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=Ugy5PHda1AgLTBX7dl94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">たしかに音の響きがだいぶ違い、動画を見ていても不思議な感覚ですね。。。</p>
+          <div class="q-meta">
+            <span>136 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=fDpkvmHcasc&lc=UgweyksdgjzQB5LEUTB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ど素人は中国産だなんだで蔑ろにするけど、同業者は今頃震えてるんじゃないかと思います、装備内容を見てみると。</p>
+          <div class="q-meta">
+            <span>135 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=NsjOPsVYNvw&lc=UgwZTYFD-RMQjantk_Z4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">たとえいい車でも要らんわ 国が国だけに</p>
+          <div class="q-meta">
+            <span>128 likes</span>
+            <span>INATES /いなかテスラ</span>
+            <a href="https://www.youtube.com/watch?v=5uX3qvOs3JU&lc=Ugwn-bjBP9leI_76df14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">日本車メーカーにも頑張ってほしいと思われた方はGOODボタン👍</p>
+          <div class="q-meta">
+            <span>116 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=7mZoSglfB70&lc=Ugx16RlUSPr8kpGRDnV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">日本の軽自動車を徹底的に研究して開発しているのが良くわかる。 日本のメーカーはこのBYD RACCOが市販化されたら「やられたらやり返す倍返しだ!」の精神で、RACCOを骨の髄まで研究仕返して欲しい。じゃないと確実に足元をすくわれると思います。</p>
+          <div class="q-meta">
+            <span>109 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=UgxBYbhh5qJNCdBPlXR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">まぁ海外勢がライバルとして出れば日本企業も負けじとよりいい車を出してくるはずなので、日本企業が完全敗北しない限りは顧客にとってメリットがあると思う。 そこそこ売れてライバルを焦らせてほしい。</p>
+          <div class="q-meta">
+            <span>102 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=Ugy1M1hCiiikpZTR0It4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">研究し尽くされていて怖い。</p>
+          <div class="q-meta">
+            <span>84 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=Ugz98h7bd63bWwCs4HF4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">問題の本質はそこじゃないから</p>
+          <div class="q-meta">
+            <span>82 likes</span>
+            <span>EVネイティブ【日本一わかりやすい電気自動車チャンネル】</span>
+            <a href="https://www.youtube.com/watch?v=i7JwGNw1oaM&lc=UgyFgsXw6EzOhjLPj454AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">BYDは元日産の人が多いな。</p>
+          <div class="q-meta">
+            <span>80 likes</span>
+            <span>ダイヤモンド公式チャンネル</span>
+            <a href="https://www.youtube.com/watch?v=GV4T3FPE4c4&lc=UgyFKp6Dpw6e5BlzCDF4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">「軽なのに重厚」 そりゃ、車重だけで1.2tだもん... 軽じゃなくて重自動車だよ。</p>
+          <div class="q-meta">
+            <span>79 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=Ugx6ZDwEeCNq5F2Yort4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">全くの専門外の事にまで知識も経験も無いのに首突っ込むから余計な事言っちゃう</p>
+          <div class="q-meta">
+            <span>77 likes</span>
+            <span>ひろゆきのショート</span>
+            <a href="https://www.youtube.com/watch?v=TpNOC1Mgy2o&lc=UgxKWab4tHp_dVU9xMZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">とても参考になりました!😁</p>
+          <div class="q-meta">
+            <span>76 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=NsjOPsVYNvw&lc=Ugy5U53aTzEA4chVX-V4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">バッテリーが重いから安定感はあるでしょうね。</p>
+          <div class="q-meta">
+            <span>74 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=UgzdqxXirwP8P-7tvpJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私は3日前に試乗しました。クリーンなデザインやしっかりとした内装、軽自動車らしからぬ走り。なのにあの価格と驚きの連続でした。 日本の自動車メーカー危うしと感じました。</p>
+          <div class="q-meta">
+            <span>74 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=Ugy3B0K4Ei7KJGaW3b54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">いいことばかり話しているけど、この車日本では全然売れてないよ。</p>
+          <div class="q-meta">
+            <span>71 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=UgxJ4EIAAHPxs8e3kLd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">衝突安全性能の評価があれば見たいですね</p>
+          <div class="q-meta">
+            <span>71 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=Ugz8907hHGLN07kI-tJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">さすがBYD!これはありでしょ!</p>
+          <div class="q-meta">
+            <span>67 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=UgztWMcfpBW3FYsHTnl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">検討してみようと思う人がいることに驚き。</p>
+          <div class="q-meta">
+            <span>66 likes</span>
+            <span>口コミ経済学【企業・商品・市場の口コミ】</span>
+            <a href="https://www.youtube.com/watch?v=DVsWdRUmIA0&lc=Ugy7fCemBq9hTiD8hDB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">試乗じゃなくて、いい車だし買えばいいのに笑</p>
+          <div class="q-meta">
+            <span>66 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=UgwX_Cix1Y6mlKrXrvN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">中国製はいらないかな。</p>
+          <div class="q-meta">
+            <span>64 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=T_gxeSHTYd4&lc=UgwKadUJfHM6xkMkzTx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">乗り心地が良さそうですね!今度試乗して、実際に体感してみたいです。</p>
+          <div class="q-meta">
+            <span>63 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=Ugy_wbmET1A2GlEiIjp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">こんなの買う馬鹿!いねえよ。</p>
+          <div class="q-meta">
+            <span>63 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=Ugx-emoVYqDcIzo4Kgt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">新車で10年大きな故障なく走れなきゃ話にならない。買うとしても10年後だな</p>
+          <div class="q-meta">
+            <span>63 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=Ugzn6Avm9rmDg6HNmQN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そんなによければお買い下さい</p>
+          <div class="q-meta">
+            <span>62 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=T_gxeSHTYd4&lc=Ugw_2ZMd1apN967aeC94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">何言ってんだこいつ?</p>
+          <div class="q-meta">
+            <span>61 likes</span>
+            <span>ひろゆきのショート</span>
+            <a href="https://www.youtube.com/watch?v=TpNOC1Mgy2o&lc=UgzMBLws8uPyN7wKDyl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">1200kgの軽自動車、そりゃ重厚だと思うけど。</p>
+          <div class="q-meta">
+            <span>57 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=UgyOX1HyJx6bzWUDOoZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">近場でしか使わない用途こそEVは良いですね</p>
+          <div class="q-meta">
+            <span>57 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=UgwxueI-bf1eiJE_p2l4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">正直、色々なアイデアには関心させられる😮</p>
+          <div class="q-meta">
+            <span>50 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=UgxM_RRhZLf_y-yDv3N4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">中国国内で起きてるBYD車の不具合みたら恐ろしくて買えない。 自動車製造実績ない会社がEV参入を機に製造販売しているのは まじで危ない。 車は日本車一択です。</p>
+          <div class="q-meta">
+            <span>50 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=UgzJYR9G9q80TC9yHS14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">いろんな意味でいらない</p>
+          <div class="q-meta">
+            <span>49 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=T_gxeSHTYd4&lc=Ugz4c5WYEJ145GdDz1R4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">表面的なスペックで判断しては駄目です。修理時の対応、2、3年後に普通に走行するか、日本車では当然のことが当然ではない国ですから!</p>
+          <div class="q-meta">
+            <span>48 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=kiMV9O0c5I4&lc=UgxpxPdTrPUJHMSBNIh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">こんな車買うやつおるんやろか?😂😂</p>
+          <div class="q-meta">
+            <span>47 likes</span>
+            <span>ダイヤモンド公式チャンネル</span>
+            <a href="https://www.youtube.com/watch?v=GV4T3FPE4c4&lc=UgyZSEeU8mhn-vNBUjd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ごめんなさい、純粋な日本人ですけど、欲しくなりました。国産メーカーも頑張ってほしい。</p>
+          <div class="q-meta">
+            <span>47 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=UgxUheF7VNXOcb95elB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">安けりゃ日本メーカーじゃなくも需要ありますよね。 この完成度で国内メーカーより安いなら脅威ですね、イオンでもBYDを取り扱うとのことなので😂</p>
+          <div class="q-meta">
+            <span>43 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=Ugzs4_teSg0uUMdKzdt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">めっちゃ攻めますやんw 車体の割にしっかり車も付いて来てる感じ</p>
+          <div class="q-meta">
+            <span>42 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=Ugy6bTMTZAU41WGMtbF4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">車自体の出来は良さそうですねー あとは長く乗った時に、故障や事故時に日本メーカーと同じようなバックアップを受けられるかどうか BYDがアフターサービスまで含めてどこまで日本に投資してくれるかは気になりますね</p>
+          <div class="q-meta">
+            <span>42 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=NsjOPsVYNvw&lc=UgxkUkoe63YRV96roa54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">コメント欄が不自然過ぎないか。</p>
+          <div class="q-meta">
+            <span>39 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=4rfASBLdFIg&lc=UgzQ_gvApcXzEvswPcJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">出来を褒めて日本のメーカーもっと頑張れって事ですよ</p>
+          <div class="q-meta">
+            <span>39 likes</span>
+            <span>ベストカーチャンネル</span>
+            <a href="https://www.youtube.com/watch?v=ZAmIKwN7440&lc=UgwriNWKT0CbhZAPF1F4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">宣伝だけやから買わないだろう。買う気もないだろう。</p>
+          <div class="q-meta">
+            <span>38 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=35FzbTvcckk&lc=UgxGfAp1xTFw4Kp0gzl4AaABAg.AZtP8QNtV0JAZuUDfS_6LQ" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">2年前、BYDのディーラー行って、色んな車種乗りました。 衝撃を受けました。 あまりに良くて!! コメントで中国製だろーとかアンチコメントする奴いますけど、乗ってみな!! アンチコメントする奴は、ほとんど試してない奴ですね〜(笑) 日本は、もうガラパゴス状態になりつつあります😱😩</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=Ugw0zif3vENMka7VHSh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">高級感があって良いですね!</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=-T3n4Rpty6Y&lc=Ugx-74rNrCjmogTMzfl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">でも売れないと思うよ</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>Plant Moon Rider/ぷらむん</span>
+            <a href="https://www.youtube.com/watch?v=7mZoSglfB70&lc=Ugz6bSayXs33OYkPF_t4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私は日本車買う</p>
+          <div class="q-meta">
+            <span>36 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=GNtAVGSGYKc&lc=Ugw0PIbrvjAwtGAQ8yZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ラッコはおから構造だから、安物で騙されて買うバカがいるんだ(笑</p>
+          <div class="q-meta">
+            <span>36 likes</span>
+            <span>INATES /いなかテスラ</span>
+            <a href="https://www.youtube.com/watch?v=5uX3qvOs3JU&lc=Ugz0eKQovkYJlUYMc8F4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">たしか、補助金利用するなら4年所有縛りがあった気がする。。それより初号機だろうから初期不良を許せて、修理対応が遅くなることも許せるような寛容な人向けかもね。</p>
+          <div class="q-meta">
+            <span>36 likes</span>
+            <span>大林モータース</span>
+            <a href="https://www.youtube.com/watch?v=wSvOqsLRwTw&lc=UgxL0Gb0MPtPyGh6y494AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">メーターのアップで、SOC72%で残り航続距離217kmとあったから、満充電では300kmくらい走りそう。ぶっちゃけ軽のガソリン車でもそれくらいしか走れないので十分と思う。あとは価格かな。</p>
+          <div class="q-meta">
+            <span>36 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=eUV9ua8HxPg&lc=Ugwr8SrucCVvn-VAa3p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">BYDっていうだけで無理だわ</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=2vToMUq6M80&lc=UgzaBBXryhkUaDSjZNZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+
+
+
+<h2>Method, and what it gets wrong</h2>
+<div class="note">
+  <b>This is not a poll.</b> People who comment are not people who buy, and
+  they skew toward enthusiasts and toward strong opinions. This measures
+  what the comment section thinks, which is a proxy for public perception
+  and a poor proxy for sales.
+  <br><br>
+  <b>Sentiment is scored by machine and sampled.</b> Comments are grouped by
+  meaning, then a multilingual model scores a sample from each group.
+  Sarcasm detection is weak, especially in Japanese — where a group reads as
+  sarcastic, its score is flagged rather than quoted as fact.
+  <br><br>
+  <b>Nothing was written by hand.</b> The clusters, counts and quotes come
+  from the pipeline. Quotes are checked against the stored corpus before
+  publication, so a paraphrase cannot reach a graphic.
+</div>
+
+<footer>
+  BYD Racco · 15,950 comments from 46 videos ·
+  fetched 2026-08-23 ·
+  generated 2026-08-25<br>
+  Raw data and the code that produced this are available on request.
+</footer>
+</div></body></html>
