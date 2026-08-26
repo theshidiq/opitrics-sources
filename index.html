@@ -6,10 +6,15 @@
 /* Same palette as the audit pages and remotion/src/theme.ts — see the
    note on CSS in opitrics/render/provenance.py. */
 body{background:#FFFFFF;color:#000000;margin:0;
- font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+ "Hiragino Sans","Noto Sans JP",sans-serif}
 .wrap{max-width:720px;margin:0 auto;padding:56px 24px 80px}
 h1{font-size:30px;margin:0 0 12px;letter-spacing:-.02em}
+h2{font-size:13px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+ text-transform:uppercase;margin:38px 0 12px;padding-top:16px;
+ border-top:1px solid #BFBFBF}
 p{color:#3D3D3D;max-width:62ch}
+a{color:#0546A8}
 ul{list-style:none;padding:0;margin:32px 0 0;border-top:1px solid #BFBFBF}
 li{padding:15px 0;border-bottom:1px solid #BFBFBF}
 li:last-child{border-bottom:none}
@@ -17,10 +22,18 @@ li a{color:#0546A8;font-weight:600;font-size:18px;text-decoration:none}
 li a:hover{text-decoration:underline}
 li span{display:block;color:#5A5A5A;font-size:13px;
  font-family:ui-monospace,monospace;margin-top:4px}
+ul.plain{border:0;margin:0 0 16px;padding:0}
+ul.plain li{border:0;padding:3px 0 3px 18px;position:relative;
+ color:#3D3D3D;max-width:62ch}
+ul.plain li:before{content:"—";position:absolute;left:0;color:#5A5A5A}
+.lede{font-size:17px}
+.updated{font-family:ui-monospace,monospace;font-size:12px;color:#5A5A5A;
+ letter-spacing:.06em;text-transform:uppercase}
 footer{margin-top:48px;padding-top:20px;border-top:1px solid #BFBFBF;
  color:#5A5A5A;font-size:13.5px}
-footer p{color:inherit;margin:0 0 10px}
+footer p{color:inherit;margin:0 0 10px;max-width:62ch}
 footer p:last-child{margin-bottom:0}
+footer a{color:#0546A8}
 </style></head><body><div class="wrap">
 <h1>Opitrics — sources</h1>
 <p>Every comment analysis published under this name has a page here listing
@@ -31,5 +44,7 @@ on YouTube. Nothing asks to be believed; click a quote and check it.</p>
 checkable, so the handle is withheld.</p>
 <p>Opitrics — opinion metrics. It reads what people say and counts it. It does
 not survey buyers or measure sales, and a comment section is not a sample of
-either.</p></footer>
+either.</p>
+<p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> ·
+<a href="mailto:info@opitrics.com">info@opitrics.com</a></p></footer>
 </div></body></html>
