@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sources · Honda N-Box</title>
+<style>
+/* Mirrors remotion/src/theme.ts. A viewer taps from a short straight to
+   this page; two palettes read as two publications, and the whole point
+   of the link is that it is the same one. The contrast ratios there were
+   measured, not estimated — carry the values, do not re-pick them by eye.
+   `--ink-3` in particular replaces a warm grey that ran near 3.5:1 on
+   small uppercase labels, the same failure theme.ts records for #909090. */
+/* --soft is a fill (code, tints); --hair is the lighter internal rule.
+   They were one warm token before, which on white made the internal
+   hairlines fainter than the warm original measured. */
+:root{--bg:#FFFFFF;--card:#FFFFFF;--line:#BFBFBF;--soft:#F4F4F4;--hair:#E0E0E0;
+  --ink:#000000;--ink-2:#3D3D3D;--ink-3:#5A5A5A;--accent:#0546A8;--ok:#0A5F2F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+  "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px 90px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 9px}
+h1{font-size:31px;line-height:1.15;margin:0 0 12px;letter-spacing:-.018em}
+.lede{color:var(--ink-2);margin:0;max-width:66ch}
+h2{font-size:14px;font-family:ui-monospace,monospace;letter-spacing:.13em;
+  text-transform:uppercase;margin:44px 0 14px;padding-top:18px;
+  border-top:1px solid var(--ink)}
+/* Hairlines come from the cells, not from a gap over a coloured
+   container. With auto-fit, a row that does not divide evenly leaves
+   empty tracks, and those tracks paint the container background as a
+   solid block — four stats over three columns on a phone. Bordering
+   each cell wraps cleanly at any count and any width. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:0;margin:22px 0;border:1px solid var(--line);border-width:1px 0 0 1px}
+.stat{background:var(--card);padding:15px 17px;
+  border:1px solid var(--line);border-width:0 1px 1px 0}
+.stat b{display:block;font-size:23px;font-variant-numeric:tabular-nums;
+  font-family:ui-monospace,monospace}
+.stat span{font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-family:ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:400;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--hair);
+  color:var(--ink-2);vertical-align:top}
+td a{color:var(--accent)}
+.num{font-family:ui-monospace,monospace;text-align:right;font-variant-numeric:tabular-nums}
+.q{background:var(--card);border:1px solid var(--line);padding:15px 17px;
+  margin-bottom:11px}
+.q-text{font-size:16px;line-height:1.5;margin:0 0 10px}
+.q-meta{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--hair);padding-top:9px}
+.q-meta a{color:var(--accent);text-decoration:none}
+.q-meta a:hover{text-decoration:underline}
+.note{border-left:2px solid var(--accent);background:#F1F5FB;padding:15px 19px;
+  margin:22px 0;font-size:15px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.note.ok{border-left-color:var(--ok);background:#F0F7F2}
+code{font-family:ui-monospace,monospace;font-size:13px;background:var(--soft);
+  padding:1px 5px}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:13.5px}
+
+/* ── report ─────────────────────────────────────────────────
+   Charts are embedded as data URIs so a page is one file with no
+   second request that can 404. A wide chart scrolls inside its own
+   box rather than widening the page — the scatter is unreadable
+   below about 700px and squeezing it to fit helps nobody. */
+figure{margin:24px 0}
+figure .scroll{overflow-x:auto;border:1px solid var(--line)}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figure.wide img{min-width:860px}
+figcaption{font-size:13.5px;color:var(--ink-3);margin-top:9px;max-width:70ch}
+.finding{border-left:2px solid var(--accent);padding:2px 0 2px 17px;margin:26px 0}
+.finding h3{font-size:19px;margin:0 0 7px;letter-spacing:-.01em;line-height:1.25}
+.finding p{margin:0;color:var(--ink-2)}
+.group{margin:34px 0 0}
+.group>h3{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--hair)}
+.theme{border:1px solid var(--line);padding:15px 17px;margin-bottom:11px}
+.theme-top{display:flex;justify-content:space-between;gap:14px;
+  align-items:baseline;flex-wrap:wrap}
+.theme h4{font-size:16.5px;margin:0 0 6px;letter-spacing:-.01em}
+.theme .sum{color:var(--ink-2);font-size:14.5px;margin:0 0 11px}
+.bar{display:flex;height:7px;margin:11px 0 9px;overflow:hidden}
+.bar i{display:block}
+.bar .p{background:var(--ok)}
+.bar .u{background:var(--ink-3)}
+.bar .n{background:#A81C19}
+.theme-meta{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);display:flex;gap:13px;flex-wrap:wrap}
+.pill{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--line);padding:2px 7px;
+  color:var(--ink-3);white-space:nowrap}
+.pill.warn{border-color:#8A5A00;color:#8A5A00}
+blockquote{margin:11px 0 0;padding:11px 0 0;border-top:1px solid var(--hair);
+  font-size:15px;line-height:1.5;color:var(--ink)}
+blockquote .src{display:block;font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);margin-top:7px}
+blockquote .src a{color:var(--accent);text-decoration:none}
+blockquote .src a:hover{text-decoration:underline}
+.toc{margin:22px 0 0;padding:0;list-style:none;columns:2;column-gap:26px}
+.toc li{margin-bottom:6px;font-size:14.5px;break-inside:avoid}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+@media(max-width:560px){.toc{columns:1}
+  h1{font-size:26px}
+  .wrap{padding:34px 18px 70px}}
+</style></head><body><div class="wrap">
+
+<header>
+  <p class="eyebrow">Check the work</p>
+  <h1>Every number and quote behind the Honda N-Box analysis</h1>
+  <p class="lede">
+    Nothing here asks to be believed. Every comment below links to the
+    original on YouTube — click one and you will land on that exact
+    comment, on that exact video, with its like count visible. A quote
+    that was invented would not resolve.
+  </p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>1,402</b><span>comments fetched</span></div>
+  <div class="stat"><b>15</b><span>videos</span></div>
+  <div class="stat"><b>1,324</b><span>analysed</span></div>
+  <div class="stat"><b>200</b><span>quotes linked</span></div>
+</div>
+
+<div class="note ok">
+  <b>How to verify a quote.</b> Click any “open on YouTube” link. YouTube
+  will load that video and scroll to the comment. Compare the text and the
+  like count with what is shown here. Like counts drift over time — the
+  numbers here are from 2026-09-17,
+  so expect small differences on popular comments.
+</div>
+
+<h2>Source videos</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Every video whose comment section was read. The comment counts are what
+  YouTube reported at fetch time; ours include replies, which YouTube's
+  headline number excludes.
+</p>
+<table>
+  <thead><tr><th>video</th><th>channel</th>
+    <th class="num">comments</th><th class="num">id</th></tr></thead>
+  <tbody><tr><td><a href='https://www.youtube.com/watch?v=teeULujtEms' target='_blank' rel='noopener'>【オーナー 閲覧注意】ホンダ N-BOX　正直レビュー</a></td><td>ハンターチャンネル / Hunter channel</td><td class='num'>280</td><td class='num'><code>teeULujtEms</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=liYrdTPQd54' target='_blank' rel='noopener'>日本一の理由がよくわかる【ホンダ N BOX カスタム】軽自動車の王を土屋圭市がレビュー！</a></td><td>【中古車検索サイト】車選びドットコム</td><td class='num'>192</td><td class='num'><code>liYrdTPQd54</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=LMYPS_5KzCw' target='_blank' rel='noopener'>【新型N-BOX カスタム・ターボ】その顔どうした！？内外装レビュー！</a></td><td>車とバイク</td><td class='num'>172</td><td class='num'><code>LMYPS_5KzCw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=v0AyFkGMf6Y' target='_blank' rel='noopener'>【日本一売れている車!!】ホンダ 新型N-BOXカスタムの内装外装･変更点を詳しく紹介!!マイナーチェンジでここまで変わるってヤバくない？【HONDA 20</a></td><td>みぃぱーきんぐ</td><td class='num'>157</td><td class='num'><code>v0AyFkGMf6Y</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=0JUd_5zKtJM' target='_blank' rel='noopener'>【NAは非力？】ホンダ 新型N-BOX に試乗！全開加速や運転支援を一般道・高速道で徹底レポート！【HONDA N-BOX 2023 JF5】</a></td><td>GOOD CARLIFE Channel /ゼミッタ</td><td class='num'>123</td><td class='num'><code>0JUd_5zKtJM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=jXHJadfPH6k' target='_blank' rel='noopener'>【新型N-BOXカスタム試乗!】NAでもターボ並の加速! 旧型N-BOXカスタムターボオーナーが比較レポート! デリカミニとも比較! | HONDA N B</a></td><td>クルマ買う系チャンネル「ワンソクTube」</td><td class='num'>117</td><td class='num'><code>jXHJadfPH6k</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=EgbmXMslM40' target='_blank' rel='noopener'>ホンダ N-BOXカスタム Lターボ【2021年MC後】のレビュー</a></td><td>腰痛マンの車レビュー</td><td class='num'>92</td><td class='num'><code>EgbmXMslM40</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=d7vRMX4VQXw' target='_blank' rel='noopener'>【ココが✕! ココが◎!】新型N-BOX JOYターボ試乗! 走りの質感は? スペーシアギアやデリカミニと比較して優れている点! 加速や乗り心地は? | H</a></td><td>クルマ買う系チャンネル「ワンソクTube」</td><td class='num'>83</td><td class='num'><code>d7vRMX4VQXw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=emwnpzLdBAY' target='_blank' rel='noopener'>【新型N-BOXカスタム・ターボ試乗】売れないはずがない！コーディネートスタイル！2026#CUSTOM #シビックタイプR #FK8 #NVAN #NON</a></td><td>FK7 HONDA くるまCHANNEL</td><td class='num'>54</td><td class='num'><code>emwnpzLdBAY</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ALmqsh7L_oQ' target='_blank' rel='noopener'>【新型N-BOXカスタム】まさか軽にコレが付いた!?外装・内装・装備・価格を新旧比較して進化ポイントを全部見せます！</a></td><td>HondaCars信州</td><td class='num'>52</td><td class='num'><code>ALmqsh7L_oQ</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=V_z-OYfxcB0' target='_blank' rel='noopener'>【歴史に残る名車です】N-BOX カスタム ターボ  JF3 試乗レビュー</a></td><td>カーライフナビゲーターabetomo</td><td class='num'>45</td><td class='num'><code>V_z-OYfxcB0</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ZMPDFU1bwfw' target='_blank' rel='noopener'>【新型N-BOX】買うなら断然こっち！おすすめグレードを徹底解説【HONDA N-BOX CUSTOM】</a></td><td>サコチャンネル 株式会社 サコダ車輌</td><td class='num'>23</td><td class='num'><code>ZMPDFU1bwfw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=_gDpcJ1hLIE' target='_blank' rel='noopener'>ホンダ 新型N-BOX ファッションスタイル試乗！走りが2代目よりよくなりました！街乗りならターボがなくてもNAエンジンで十分です！N-BOXカスタムより乗</a></td><td>ちゃんやまの株主優待と車の紹介チャンネル</td><td class='num'>8</td><td class='num'><code>_gDpcJ1hLIE</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=dFSFlksH24c' target='_blank' rel='noopener'>ホンダ新型N-BOXマイナーチェンジ2026年7月登場！迫力デザイン刷新＆次世代Googleシステム採用！</a></td><td>Cars Design</td><td class='num'>4</td><td class='num'><code>dFSFlksH24c</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=wBxmxiT-eeE' target='_blank' rel='noopener'>【王者の輝き】デザイン刷新＆装備充実 新型N-BOX マイナーチェンジ ステアリングヒーター新装備！</a></td><td>タカーズチャンネル</td><td class='num'>0</td><td class='num'><code>wBxmxiT-eeE</code></td></tr></tbody>
+</table>
+
+<h2>Quoted comments · 200</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Ranked by likes. Every quote used anywhere in the analysis, its charts
+  or its threads appears here with a link to its source.
+</p>
+<div class="q">
+          <p class="q-text">最近のホンダ車の作り込みの方向性は良いです。N-BOXも先代まではヤンキー向けデザインで非常にダサかったのが、今回のエクステリアは素直に良い。内装も品が良く、シンプルで良い。そして車としての基本性能はしっかり底上げしてくる。ホンダには今の路線をこのまましっかり堅持して頂きたい。</p>
+          <div class="q-meta">
+            <span>100 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzUbNlg0M_yXp3tMwZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">なんとなくホンダはこの世代でルーミーやソリオを検討する層も取り込みたくて走りや静粛性等を重視したんだろうなという気持ちだろうなとは汲み取れますが、収納が減ったり車内の質感が落ちたりするのは「車に興味ない人」への訴えかけに説得力が薄くなるなぁという印象のある車ですね となると、ライバルの新型スペーシア、もしくはスペーシアベースの評価が気になりますので楽しみにしております</p>
+          <div class="q-meta">
+            <span>98 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugxb0nGgw26CJuKts6V4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">今日これのカスタムにカーシェアで乗ったけど走行した感じがびっくりするくらい良かったです。内装が多少チープになった位で評価が下がってしまうのはほんとに勿体ない、いい車です</p>
+          <div class="q-meta">
+            <span>95 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxZNl_sMzOeusnOdU94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">コストカットの為に乗り心地、遮音性を削るのは賛成しません。ホンダの軽自動車はそこが一番の魅了です。内装重視の方はどうぞ他社を買って下さい。</p>
+          <div class="q-meta">
+            <span>75 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugw5pOrcrJI_ZHo2ZfJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">Switchとトミカの工夫凄まじいですね...! 車を作るときってそんな細かいところまで想像して気遣いをしているんだなと驚きました。 普段運転するときに何気なく感じている運転性能や快適性も、きっとこのような気遣いの賜物なんだろうなと思うと、より感謝して乗りたくなりますね。 そしてラストのアンデルさんの総評、非常に熱く想いがこもっていて感動しました。 ホンダの方々の励みになりますように。</p>
+          <div class="q-meta">
+            <span>75 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgyBvJW_jfWsuOgRYOF4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">天気が良すぎる</p>
+          <div class="q-meta">
+            <span>73 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzGO01dWtQi1GNNdwJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ZRVと同様にアンデルさんの意見を取り入れているので、ホンダ自体に好印象を持てます。</p>
+          <div class="q-meta">
+            <span>69 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxgSvisFEBE_PjcykN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">リクエストに応えて頂きありがとうございます!!</p>
+          <div class="q-meta">
+            <span>66 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgwSj9Dc_-Sm7zgJ2r14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">走りの質は進化しているとは思いますが、内外装の出来栄えは二代目が一番完成されてますね。 マイチェンでメッキパーツ多くなり品が無く見えます</p>
+          <div class="q-meta">
+            <span>57 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgwbOOm8_uRrIoAZmr94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">45分とは、熱が入ってますね。 熱い思いが伝わってきました。</p>
+          <div class="q-meta">
+            <span>52 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugx3Wo_LRbz6_3UBr1p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ベースグレードは地味、カスタムは派手で棲み分けできていいんじゃない? どちらも嫌と言うやつは何が出ても買わないし</p>
+          <div class="q-meta">
+            <span>49 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgzuJd-R1WhYcZLgyp94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">やっぱりこのチャンネルは面白い</p>
+          <div class="q-meta">
+            <span>48 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzM54BtHXbntvqAKVZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">コーディネートスタイルでは無いですが、N‐BOXカスタム契約しました! 納車は8月末です😆</p>
+          <div class="q-meta">
+            <span>42 likes</span>
+            <span>みぃぱーきんぐ</span>
+            <a href="https://www.youtube.com/watch?v=v0AyFkGMf6Y&lc=Ugz4xHMMx0WDDTzuJyp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">12月にファッションスタイル納車です✋2代目前期カスタム→NAに買い替えです。かっこいい→可愛いに変更って感じです。ほぼ街乗りなのでターボは必要無いのでNAで充分です。</p>
+          <div class="q-meta">
+            <span>42 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgwD84SkWHMUESAsvcl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">おっしゃってる通り、「運転する」「走る」という車としての基本性能を上げ、そちらにコストが掛かったので見た目や内装の質感へのコストは下がったって印象ですね。 個人的にとても好印象なフルモデルチェンジなんですけど、やはり世間的には見た目の高級感は大事というのが浮き彫りになってしまうという。 車作りって本当に難しいですよね。 他の方のレビューとから見てると「見た目や内装が安ぽくなった」ってとこしか見てないのが多いので、やはりこのチャンネルのレビューはとても参考になります✨</p>
+          <div class="q-meta">
+            <span>41 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgyYWITSV__joNvtfVt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">【アイドリングストップ】はいらない。</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgyCNgN1eoZZG16liB14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">NAかターボかで激論が交わされてるけど、それ以前のNAの軽からすればどっちも十分なパワーがあるよ だって実家の15年前のタント、上りの高速でベタ踏みでも70km/h以上出せないんだもん 大人4人乗ったら平地でも80km/h出ないんだぜ? 今の軽はNAでも大丈夫だよ、みんな心配し過ぎだって🚗</p>
+          <div class="q-meta">
+            <span>32 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgyOzskYbVkRvNSsD_F4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">正直乗った時点で「え、なにこれ」って感じでした もちろんいい意味でですよ 内装の質感がどうでもよくなるくらい乗り心地、静粛性がいいです 内装は社外品で色々貼り付ければいいですが乗り心地や静粛性を自分でどうにかするのは難しいのでそこを落とすのはよくないと思いますね どうせなら内装も乗り心地もよくしてくれればと思います そこで数十万上がっても買う価値のある車です</p>
+          <div class="q-meta">
+            <span>30 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgwfqZcxpiSC42fGADt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">個人的にカスタムは旧型から無難なデザインに落ち着いていて好みで購入しました。</p>
+          <div class="q-meta">
+            <span>30 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgyEfWj2YW9F-RWnCmV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私もN-BOXのペダルレイアウトは好きじゃなかったのですが変わっていなくてこれだけで買いたくなくなります 安全に直結するものなので最優先で改善してほしいですね 電動パーキングもルーミーのようにPレンジと連動するタイプで良かったのでは? Pに入れてサイド引かないことってほぼないですから ホイールに関してはドラムブレーキだとスカスカに見えてしまうので隠せる意味で鉄チンはありだと思っています 総じてマイナーチェンジで変えれば5の評価になる気もするので良い車だなあという感想でした</p>
+          <div class="q-meta">
+            <span>28 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugx6prWM-CUsL8XsSLh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スペーシアカスタムを手放し これ買います😮</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>みぃぱーきんぐ</span>
+            <a href="https://www.youtube.com/watch?v=v0AyFkGMf6Y&lc=UgxtrdsQ5e1iT4yrFfp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">現行カスタムに先日乗りましたがコストカットを良し悪しどちらに捉えるかですね 走行性はバツグンでした</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzBMyiSZ4eNK7I-PGl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">小さな液晶メーターの安っぽさが凄いですね。 古い人間なのでメカ式二眼メーターの方が好きです。</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=jXHJadfPH6k&lc=UgxNq4XoC8NrEjIP4sl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">NBOXの見た目はライバルの中でもおしゃれだよね〜。デリカミニは可愛い😍</p>
+          <div class="q-meta">
+            <span>25 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=d7vRMX4VQXw&lc=UgyCX8RDW8T92B4f35B4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">最近炎上してる例のアレの作りの甘さとか見ると こんな軽自動車でも売れてるものはしっかりと作られている 当たり前は当たり前じゃないんだな</p>
+          <div class="q-meta">
+            <span>23 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgwaWGC-1dkyY0wEClV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">旧型の n-box かっこいいね</p>
+          <div class="q-meta">
+            <span>22 likes</span>
+            <span>腰痛マンの車レビュー</span>
+            <a href="https://www.youtube.com/watch?v=EgbmXMslM40&lc=UgwVhmksOblyB7D8rm14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">真摯なレビューに加え、メーカーへ提言も行い、それが当を得ていそうと思えるほど説得力があるアンデルさんを信用しています。 ハンターチャンネルさんの今後のご活躍を期待しています。 レビューの要望として、カローラセダンをお願いします。 サブチャンネルでセダン全般の特徴や魅力を語るというのもご検討頂けたら嬉しいです。</p>
+          <div class="q-meta">
+            <span>22 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxGsGngmU8-3DwQCq54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">見えるとこにお金かける大事さが伝わってきました。 見えない部分は営業の方が説明していくしかないですね。</p>
+          <div class="q-meta">
+            <span>21 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugy1CJAA0O8wtBu4qDl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">内装がオシャレですね!</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=d7vRMX4VQXw&lc=UgxQw4FwISCcdgPzUdl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">買う金ない奴らは勝手にディスってろ😢</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgzHrfK52vRsZH1IA_B4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">良いカラーですね チェック柄のシートもカタログで見るより全然良いですね</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=d7vRMX4VQXw&lc=UgwLjNExYc-XiZjLATV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">いい車なのは知ってる 求めてる層がいるのも理解できる だけど自分が求めてるものではない 軽自動車は値段も重要だと思う</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgwavCu-4KrYlKZqMQx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">外装のメッキとか収納、特に諸々のユーチューバーさんが指摘している中央ドリンクホルダー、シートの質感等々はいくらでもアマゾンとか楽天で補う事が出来ますよね? しかし静粛性や走り、安全性能は後付け出来ないんですよ。そこにコストをかけたのはメーカーとして当然かと。 車に求められるのはドリンクホルダーではなく走らせる喜びですよ。軽ハイトワゴンに出来るものをいかに実現出来たか。私のJF5は300万円を軽く超えていますが大満足しています。これは普通車を含め諸々試乗しての結果です。</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzBbGDR-9fuhuuEG5N4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">この普通顔にもターボの設定欲しかった</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgxHnP9rz3CmXPRA3It4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">悪いところは悪いと ハッキリ言うところが しっかりモータージャーナリスト 最近はメーカーに忖度 してネガ情報言わん エセリストが増えて るから応援してる🎉</p>
+          <div class="q-meta">
+            <span>20 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgwF2wvuztablExvk1p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">二代目NBOXのオーナーです ”小さな上質車”と言うコンセプトがボヤけてしまった印象です。 ノーマルを試乗しましたが、静粛性が非常に良くなっており、またサスも微調整され乗り心地は更に良くなっていました。 だだ、収納の大幅カットは道具としての商品力が非常に下がってしまい残念というか、もったいないなと思いました また、後部座席のスピーカーの溝がミニカーで遊べます!とPOPまで付けて宣伝していましたが、最初冗談かと思いました 二代目がヒットしたのは、軽自動車の道具としての使いやすさ・便利さを作りこんだ上に、コンパクトカー顔負けの高級感 そして乗り心地の良さをバランスよく実現した結果、多くの人に好まれた名車だったと思います 女性が内装のデザインに 加わっていたのも大きいと思います 特に運転席前の収納 使い勝手の良いドリンクホルダーが廃止になったのは、かなり痛い。 座高の低い女性でも、シートを上げれ</p>
+          <div class="q-meta">
+            <span>19 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxJkFaiOJw-zAKTzRt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">最近のホンダはフリードもステップワゴンもシンプルな内装ですよね。NBOXも同じコンセプトでいいと思います。写真で見ると安っぽく見えますが実際見ればそうでは無い。どっかの偽物みたいな車はシートベルトの機能もイマイチ出し未だにテールのウインカーやバックランプはハロゲン。しかもトランクのオープナーもワイヤー式という貧乏仕様。内装も質感がいいのかと言われたら、、、見せ方が上手いだけで質感は。。。コンソールボックスの表皮も薄いので数年乗れば角が剥がれてくるでしょう。</p>
+          <div class="q-meta">
+            <span>19 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxYmSJb4myI5G32cv54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">N-box joyのあのフロントフェィスでターボはかなり良いですね😊</p>
+          <div class="q-meta">
+            <span>19 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=d7vRMX4VQXw&lc=UgyCOFW52hegePybRQJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ホンダのコストのかけ方は真っ当だと思います。真っ当なのに消費者受けが良くない。トヨタはその逆をやって大成功してます。商売としてはトヨタが正解かも。</p>
+          <div class="q-meta">
+            <span>18 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgywWPV9-5cJt5LtYxd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">誰がメッキつければカッコいいと思ってるのでしょうか?こんな恥ずかしいフロントフェイス乗りたくないですね!スペーシアカスタムの方がはるかにカッコいいですね!</p>
+          <div class="q-meta">
+            <span>18 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgykX9iz5tjvhBmOaON4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">JF1→JF3から乗り換えて、進化に驚いた。 静粛性がとにかく違うし燃費が1-2割よくなりました。 ターボでも流れの良い道でリッター25超えます。</p>
+          <div class="q-meta">
+            <span>17 likes</span>
+            <span>カーライフナビゲーターabetomo</span>
+            <a href="https://www.youtube.com/watch?v=V_z-OYfxcB0&lc=UgwI-RsWiM7YFwp3W1p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">新型のグリル...分厚い唇に見えてしかたない...</p>
+          <div class="q-meta">
+            <span>17 likes</span>
+            <span>車とバイク</span>
+            <a href="https://www.youtube.com/watch?v=LMYPS_5KzCw&lc=Ugxcovv0cLsqwvji9QV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">フロントライト変わってるよ しっかりしてください工藤さん 下調べ足りない</p>
+          <div class="q-meta">
+            <span>17 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=Ugyu9aJStapqPksAjAJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">前から見たかったやつだ! ありがとうございます!</p>
+          <div class="q-meta">
+            <span>16 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgyRpe0tgKBQbh_ym2R4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">新型N-BOXカスタムはめっちゃくちやカッコいいなぁと思いましたよ!!️</p>
+          <div class="q-meta">
+            <span>15 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=jXHJadfPH6k&lc=UgyTZsd2JUdPPd7pVH54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">仰っている通りまさに購買意欲が起きにくいクルマになってしまった感じがしました。結果、初代N-Boxからスペーシアに乗り換えることにしました。スペーシアは粗削りなところがあるが故の運転の楽しさが味わえるクルマだと感じています。</p>
+          <div class="q-meta">
+            <span>15 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgzcY9G446-6gHmvPeN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">高速道路やバイパスの 使用率が低ければNA一択ですね! 燃費も良いし顔も好みなので、本当ならNAを選びたいんですが 都心に住んでいて市街地 走行が多いのですが 高速もバイパスも使用するのでターボ1択になりそうです😅</p>
+          <div class="q-meta">
+            <span>15 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgxStKELOi08Zwr-E0B4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私でしたらNAを選びますね。非力かもしれませんが、私は運転が下手ですのでターボを選ぶと、どう運転してもNAよりも燃費が悪くなってしまいますので。</p>
+          <div class="q-meta">
+            <span>15 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=Ugx5ARyW0ImKgudNUbp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">デザインに100%なんかないしコメント欄は雑音だと思って気にせず乗りたい方は乗ってくださいという話</p>
+          <div class="q-meta">
+            <span>14 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgxM_2cQBJU8_WwFwPJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">なんか汚らしい顔になっちゃいましたね</p>
+          <div class="q-meta">
+            <span>14 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=UgwbOOm8_uRrIoAZmr94AaABAg.A_S3uNcX6lJA_S7vWL6Kwh" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">車速連動自動ドアロックの件、他の方の走行レビューでも、新型には不採用なのが残念なポイントの一つと言われてましたので本当なのかもしれません。小さい子供を乗せている場合など、自動ドアロックがあると安心ですよね。事故対応時のデメリットもありますけど、今まで車速連動自動ドアロックの機能が付いた車から乗り換える場合には、メリットが大きい分、少し不安になると思います。</p>
+          <div class="q-meta">
+            <span>14 likes</span>
+            <span>GOOD CARLIFE Channel /ゼミッタ</span>
+            <a href="https://www.youtube.com/watch?v=0JUd_5zKtJM&lc=UgzubOIVauP7I21Mqid4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">車修理してる時、代車でおかりしましたが、本当にいいつくりでした。</p>
+          <div class="q-meta">
+            <span>14 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgxBiKrN0_jbq3OmKRZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">【個人の感想です】正直に言えば現行のN-BOXはデザインがいまいちです パッと見た印象はなんかヌメっとしてるなと感じます ホンダのデザインの弱点だと思ってるのがフロントグリルです 現行の全体的なデザインも先代に負けていると思います ノーマルのライトは昔の蛍光灯みたいなデザインで安物の家電のように見えます フロントのグリル下の穴もダサいです カスタムのデザインも正直格好良くないです スズキのスペーシアの方が格好良いです スペーシアカスタムが売れているのも分かります</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugzzt24Zoj3l2ckoal14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">修理の代車で久しぶりに乗った軽がこれで、最近の軽は視界もいいしよく走るしずいぶん進化したなと思いました。 エクステリアやインテリア関しては特に何も思わず「軽ならこんなもんだろう」という感じでした。 シートの質感はお子さんが汚したりすることを考えると仕方ないのかと思います。シートカバーしたら見えなくなってしまう部分ですし。 先代からのファンとかならそこが目につくのかも知れませんが、初心者の方がこだわりなく初めてのマイカーとして乗るならピッタリです。 一つ気になったのは、バックミラーが小さいこと。 リアウィンドウが大きいがゆえに、縦の視界がバックミラーに収まらず見える範囲が狭く感じました。 ただこれも後付けで対応できるし、決して視界が悪いわけではないです。 総評として、あまりにも運転しやすいので「これに慣れたら運転上手くならないだろうな」と思うレベルです。</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugxun3AsuXo2dmnOWE94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ホンダは、いいものを作ればお客さんはわかってくれる、って信じ過ぎなんだよな。 いくら燃費がよくて、乗りごごちがよくて、パワフルに良く走る車でも、カッコ悪かったり内装とかの見てわかる部分が安っぽかったりしたら、特に車に熱心ではない人、興味の薄いひとは選ばないよね。</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=UgwzZif2jfoqqdBEyDR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">都市部街中ではNAエンジンでも十分。 反面、山坂道やバイパス道や高速道路では、やはりターボは欲しい。</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=jXHJadfPH6k&lc=UgykN4JbUCl7TGQSldh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">内装の質感は物価高、カスタムとの差別化、オプションで対応できるものはオプションでってことなんかな。それでも、いろんなところが進化してブラッシュアップされてるのは好感が持てる</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugz-bcDEM7dFN1zmBWZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">走りは良くなってそうですね👍 安全装備面のグレードの差別化は辞めてほしいですね(⁠&gt;⁠0⁠&lt;⁠;⁠)</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>クルマ買う系チャンネル「ワンソクTube」</span>
+            <a href="https://www.youtube.com/watch?v=jXHJadfPH6k&lc=UgxpT-0kNxqRRrKhxC54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">モデル末期にメッキ部が黒くなったスタイルブラックが出るんだろなぁ😊 それまで待ちます</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>【中古車検索サイト】車選びドットコム</span>
+            <a href="https://www.youtube.com/watch?v=liYrdTPQd54&lc=Ugy3h1FyvK68Rl6i93p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">最近親が買った車のレビューはいつもより聞き入ってしまいました</p>
+          <div class="q-meta">
+            <span>13 likes</span>
+            <span>ハンターチャンネル / Hunter channel</span>
+            <a href="https://www.youtube.com/watch?v=teeULujtEms&lc=Ugzqrd9ehfne5aM-Up94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+
+
+
+<h2>Method, and what it gets wrong</h2>
+<div class="note">
+  <b>This is not a poll.</b> People who comment are not people who buy, and
+  they skew toward enthusiasts and toward strong opinions. This measures
+  what the comment section thinks, which is a proxy for public perception
+  and a poor proxy for sales.
+  <br><br>
+  <b>Sentiment is scored by machine and sampled.</b> Comments are grouped by
+  meaning, then a multilingual model scores a sample from each group.
+  Sarcasm detection is weak, especially in Japanese — where a group reads as
+  sarcastic, its score is flagged rather than quoted as fact.
+  <br><br>
+  <b>Nothing was written by hand.</b> The clusters, counts and quotes come
+  from the pipeline. Quotes are checked against the stored corpus before
+  publication, so a paraphrase cannot reach a graphic.
+</div>
+
+<footer>
+  Honda N-Box · 1,402 comments from 15 videos ·
+  fetched 2026-09-17 ·
+  generated 2026-09-17<br>
+  Raw data and the code that produced this are available on request.
+</footer>
+</div></body></html>

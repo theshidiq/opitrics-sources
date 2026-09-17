@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sources · Nissan Sakura</title>
+<style>
+/* Mirrors remotion/src/theme.ts. A viewer taps from a short straight to
+   this page; two palettes read as two publications, and the whole point
+   of the link is that it is the same one. The contrast ratios there were
+   measured, not estimated — carry the values, do not re-pick them by eye.
+   `--ink-3` in particular replaces a warm grey that ran near 3.5:1 on
+   small uppercase labels, the same failure theme.ts records for #909090. */
+/* --soft is a fill (code, tints); --hair is the lighter internal rule.
+   They were one warm token before, which on white made the internal
+   hairlines fainter than the warm original measured. */
+:root{--bg:#FFFFFF;--card:#FFFFFF;--line:#BFBFBF;--soft:#F4F4F4;--hair:#E0E0E0;
+  --ink:#000000;--ink-2:#3D3D3D;--ink-3:#5A5A5A;--accent:#0546A8;--ok:#0A5F2F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+  "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px 90px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 9px}
+h1{font-size:31px;line-height:1.15;margin:0 0 12px;letter-spacing:-.018em}
+.lede{color:var(--ink-2);margin:0;max-width:66ch}
+h2{font-size:14px;font-family:ui-monospace,monospace;letter-spacing:.13em;
+  text-transform:uppercase;margin:44px 0 14px;padding-top:18px;
+  border-top:1px solid var(--ink)}
+/* Hairlines come from the cells, not from a gap over a coloured
+   container. With auto-fit, a row that does not divide evenly leaves
+   empty tracks, and those tracks paint the container background as a
+   solid block — four stats over three columns on a phone. Bordering
+   each cell wraps cleanly at any count and any width. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:0;margin:22px 0;border:1px solid var(--line);border-width:1px 0 0 1px}
+.stat{background:var(--card);padding:15px 17px;
+  border:1px solid var(--line);border-width:0 1px 1px 0}
+.stat b{display:block;font-size:23px;font-variant-numeric:tabular-nums;
+  font-family:ui-monospace,monospace}
+.stat span{font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-family:ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:400;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--hair);
+  color:var(--ink-2);vertical-align:top}
+td a{color:var(--accent)}
+.num{font-family:ui-monospace,monospace;text-align:right;font-variant-numeric:tabular-nums}
+.q{background:var(--card);border:1px solid var(--line);padding:15px 17px;
+  margin-bottom:11px}
+.q-text{font-size:16px;line-height:1.5;margin:0 0 10px}
+.q-meta{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--hair);padding-top:9px}
+.q-meta a{color:var(--accent);text-decoration:none}
+.q-meta a:hover{text-decoration:underline}
+.note{border-left:2px solid var(--accent);background:#F1F5FB;padding:15px 19px;
+  margin:22px 0;font-size:15px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.note.ok{border-left-color:var(--ok);background:#F0F7F2}
+code{font-family:ui-monospace,monospace;font-size:13px;background:var(--soft);
+  padding:1px 5px}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:13.5px}
+
+/* ── report ─────────────────────────────────────────────────
+   Charts are embedded as data URIs so a page is one file with no
+   second request that can 404. A wide chart scrolls inside its own
+   box rather than widening the page — the scatter is unreadable
+   below about 700px and squeezing it to fit helps nobody. */
+figure{margin:24px 0}
+figure .scroll{overflow-x:auto;border:1px solid var(--line)}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figure.wide img{min-width:860px}
+figcaption{font-size:13.5px;color:var(--ink-3);margin-top:9px;max-width:70ch}
+.finding{border-left:2px solid var(--accent);padding:2px 0 2px 17px;margin:26px 0}
+.finding h3{font-size:19px;margin:0 0 7px;letter-spacing:-.01em;line-height:1.25}
+.finding p{margin:0;color:var(--ink-2)}
+.group{margin:34px 0 0}
+.group>h3{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--hair)}
+.theme{border:1px solid var(--line);padding:15px 17px;margin-bottom:11px}
+.theme-top{display:flex;justify-content:space-between;gap:14px;
+  align-items:baseline;flex-wrap:wrap}
+.theme h4{font-size:16.5px;margin:0 0 6px;letter-spacing:-.01em}
+.theme .sum{color:var(--ink-2);font-size:14.5px;margin:0 0 11px}
+.bar{display:flex;height:7px;margin:11px 0 9px;overflow:hidden}
+.bar i{display:block}
+.bar .p{background:var(--ok)}
+.bar .u{background:var(--ink-3)}
+.bar .n{background:#A81C19}
+.theme-meta{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);display:flex;gap:13px;flex-wrap:wrap}
+.pill{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--line);padding:2px 7px;
+  color:var(--ink-3);white-space:nowrap}
+.pill.warn{border-color:#8A5A00;color:#8A5A00}
+blockquote{margin:11px 0 0;padding:11px 0 0;border-top:1px solid var(--hair);
+  font-size:15px;line-height:1.5;color:var(--ink)}
+blockquote .src{display:block;font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);margin-top:7px}
+blockquote .src a{color:var(--accent);text-decoration:none}
+blockquote .src a:hover{text-decoration:underline}
+.toc{margin:22px 0 0;padding:0;list-style:none;columns:2;column-gap:26px}
+.toc li{margin-bottom:6px;font-size:14.5px;break-inside:avoid}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+@media(max-width:560px){.toc{columns:1}
+  h1{font-size:26px}
+  .wrap{padding:34px 18px 70px}}
+</style></head><body><div class="wrap">
+
+<header>
+  <p class="eyebrow">Check the work</p>
+  <h1>Every number and quote behind the Nissan Sakura analysis</h1>
+  <p class="lede">
+    Nothing here asks to be believed. Every comment below links to the
+    original on YouTube — click one and you will land on that exact
+    comment, on that exact video, with its like count visible. A quote
+    that was invented would not resolve.
+  </p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>3,081</b><span>comments fetched</span></div>
+  <div class="stat"><b>16</b><span>videos</span></div>
+  <div class="stat"><b>2,939</b><span>analysed</span></div>
+  <div class="stat"><b>200</b><span>quotes linked</span></div>
+</div>
+
+<div class="note ok">
+  <b>How to verify a quote.</b> Click any “open on YouTube” link. YouTube
+  will load that video and scroll to the comment. Compare the text and the
+  like count with what is shown here. Like counts drift over time — the
+  numbers here are from 2026-09-17,
+  so expect small differences on popular comments.
+</div>
+
+<h2>Source videos</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Every video whose comment section was read. The comment counts are what
+  YouTube reported at fetch time; ours include replies, which YouTube's
+  headline number excludes.
+</p>
+<table>
+  <thead><tr><th>video</th><th>channel</th>
+    <th class="num">comments</th><th class="num">id</th></tr></thead>
+  <tbody><tr><td><a href='https://www.youtube.com/watch?v=4OxcWfd3K28' target='_blank' rel='noopener'>やっちゃった⁉日産サクラを手放す人続出の真相... #日産 #サクラ #EV</a></td><td>ゆっくりクルマの鼓動</td><td class='num'>1,158</td><td class='num'><code>4OxcWfd3K28</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=zmZbRETsH0U' target='_blank' rel='noopener'>【日産サクラ投げ売り】2026年、軽EVが普及しそうでしない理由が判明…</a></td><td>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</td><td class='num'>373</td><td class='num'><code>zmZbRETsH0U</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=pLZMevDM8SM' target='_blank' rel='noopener'>日産 サクラ  【試乗編】 軽の常識を超えた高レベルな走り！ ラブカーズTV 河口まなぶ がノート以来の笑顔で試乗インプレッション！</a></td><td>LOVECARS!TV!</td><td class='num'>227</td><td class='num'><code>pLZMevDM8SM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=yIuMDhqiVGo' target='_blank' rel='noopener'>【日産サクラ】試乗レビュー（忖度ナシのガチレビュー）公道を走ってわかった！</a></td><td>車とバイク</td><td class='num'>226</td><td class='num'><code>yIuMDhqiVGo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=xVtdO16ySk4' target='_blank' rel='noopener'>竹岡圭の日産サクラ試乗記【NISSAN SAKURA】</a></td><td>圭Tube☆竹岡圭のカートークバラエティ☆</td><td class='num'>212</td><td class='num'><code>xVtdO16ySk4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=lN8xpWV09eI' target='_blank' rel='noopener'>【日産サクラ】トルク195Ｎmが走りと精神的余裕に効く効く</a></td><td>ウナ丼_STRUT_エンスーCARガイド</td><td class='num'>186</td><td class='num'><code>lN8xpWV09eI</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=hHw31wUty_A' target='_blank' rel='noopener'>日産 サクラ【試乗レポート】マイナーチェンジで装備を充実!! 日常の使いやすさをさらに進化!! E-CarLife with 五味やすたか</a></td><td>E-CarLife with 五味やすたか</td><td class='num'>130</td><td class='num'><code>hHw31wUty_A</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=awaex7OLXGo' target='_blank' rel='noopener'>【日産サクラ】バッテリー劣化は? 良かった点と気になる点。これから購入する人は必ず聞いてね</a></td><td>たびまる</td><td class='num'>122</td><td class='num'><code>awaex7OLXGo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=zR0zq1qgA5U' target='_blank' rel='noopener'>軽EV日産サクラのリアル〇〇#shorts</a></td><td>Kaz研究所</td><td class='num'>118</td><td class='num'><code>zR0zq1qgA5U</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=JK1QbrfN8Ps' target='_blank' rel='noopener'>【日産サクラ】オーナーとして1年弱乗った感想を、サクラ愛の強すぎる営業スタッフが語ります。</a></td><td>クルマカウゾーチャンネル</td><td class='num'>101</td><td class='num'><code>JK1QbrfN8Ps</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=YpHBkmdlMm8' target='_blank' rel='noopener'>【軽自動車EV比較試乗!】ホンダN-One E:と日産サクラどっちが買い? 価格･航続距離･内装･加速･電費･走りを比較レポート! 試乗サービス「カージャニ</a></td><td>クルマ買う系チャンネル「ワンソクTube」</td><td class='num'>100</td><td class='num'><code>YpHBkmdlMm8</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=DTetS-YFKuE' target='_blank' rel='noopener'>日産 軽EV「サクラ」に廉価グレード 今夏に発売【WBS】</a></td><td>テレ東BIZ ダイジェスト</td><td class='num'>73</td><td class='num'><code>DTetS-YFKuE</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=qqM1-g6oQAk' target='_blank' rel='noopener'>【東京なんと57万円で買える！】日産 新型サクラ を試乗！ 15万円値下げ＋補助金最大148万円、太陽光とV2Hあれば軽EVがこの値段とは！？</a></td><td>LOVECARS!TV!</td><td class='num'>37</td><td class='num'><code>qqM1-g6oQAk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=t0ba1T16bwk' target='_blank' rel='noopener'>【新型軽EV：サクラ】ファーストインプレッション</a></td><td>福島日産</td><td class='num'>14</td><td class='num'><code>t0ba1T16bwk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=4ZRiYdTjb9Y' target='_blank' rel='noopener'>【日産 軽EVサクラ】ママ目線で軽EV SAKURA徹底解剖！前編｜群馬日産</a></td><td>群馬日産自動車・日産プリンス群馬</td><td class='num'>4</td><td class='num'><code>4ZRiYdTjb9Y</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ZZ7NQm9AIUI' target='_blank' rel='noopener'>【電気の力を体感】坂道もスムーズ！サクラ試乗インプレッション</a></td><td>Kuwataka Channel あなたの街のクルマ屋さん</td><td class='num'>0</td><td class='num'><code>ZZ7NQm9AIUI</code></td></tr></tbody>
+</table>
+
+<h2>Quoted comments · 200</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Ranked by likes. Every quote used anywhere in the analysis, its charts
+  or its threads appears here with a link to its source.
+</p>
+<div class="q">
+          <p class="q-text">スマホの電池で、充電式電池がどのように劣化していくかはみんな知ってる。 暑くてもダメ、寒くてもダメ、その上徐々に保ちが悪くなる。 数万円のスマホでも腹立つ現象なのに、車なんぞ買えるかい!</p>
+          <div class="q-meta">
+            <span>1,680 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugy-KLft0yRUdxhtUzV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">太陽光しかり、国が補助金出すキャンペーンには必ず裏がある。国が国民のためにまともな考えする訳がない。</p>
+          <div class="q-meta">
+            <span>1,304 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgwG8fyBy7ZXOnCUySl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">補助金とかいう特定業界への利益誘導はやめろ</p>
+          <div class="q-meta">
+            <span>1,298 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzsaXuduFNIEMZxljN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そもそも欧州が電気に舵を切った理由が日本車の排除であり、環境問題はついで以下の建前。その事が分かってればEVが主流になる筈が無いのは明白。</p>
+          <div class="q-meta">
+            <span>887 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyVJ06SXC9El-qdAmR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">使用目的が市内のお買い物程度ならコレでいいんだけど、自家用車としては急な長距離移動に全く使えないのは痛いよな。</p>
+          <div class="q-meta">
+            <span>622 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzeI4h8XtxYhN6h09p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私もサクラを手放した一人です。 仕事帰りの夜中に田舎町の住宅地で鹿に当たり負けして廃車に。多分ですが、サクラより鹿の方が丈夫で航続距離も長いのでは😊</p>
+          <div class="q-meta">
+            <span>483 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugzw7wwbWAFFMv1xvd94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">近所走る程度の足車に200万オーバーは高過ぎる。それなら数十万の中古でたまに遠出もできる軽ガソリン車の方がいいわ。 数時間の充電待ちより数分で満タンにできるガソリンの方がいい。</p>
+          <div class="q-meta">
+            <span>448 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgwxA3-Du4q8jCDwSlN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">こんなもんに250万出すよりも中古で50万くらいのワゴンRでも買ってる方がよっぽど使えるし間違いなく経済的で環境にも優しい。</p>
+          <div class="q-meta">
+            <span>388 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxCXXxOxj9KPeu26zt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そもそも国民から取り上げた税金からEV補助金出すなよ</p>
+          <div class="q-meta">
+            <span>333 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=Ugx1pydSHwaE7qT59aR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">会社の人が乗ってるけど、冬の航続可能距離がくっそ短いらしいw</p>
+          <div class="q-meta">
+            <span>314 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyVyerqXi7PYgdWhp94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">国が普及さすのろくなもんがない</p>
+          <div class="q-meta">
+            <span>284 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzQKpffxSWPHunozMR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">こうなる事を誰も気が付かなかったと考えるのは、余りに不自然ですね。</p>
+          <div class="q-meta">
+            <span>227 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzMaj7Bn8xIv1V9gJJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">元リーフ乗りです、家に充電ありでしたが、EV時代は少なくとも10年早い!充電が長すぎる、急速の30分ですら長い、1台並んでたら1時間待つ事もある、実用化まではそこが短くならないと話にならない、航続距離も冬でACつけると2.30%下がるし、リセール悪いし本当に辞めた方がいい!</p>
+          <div class="q-meta">
+            <span>203 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugzjm7V2UPD329MMqbh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">近所への買い物、子供を駅までの送り迎えの為の車</p>
+          <div class="q-meta">
+            <span>181 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyXJj0bxQf72IVVpZh4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そもそも日本の環境にEV車は合わない。</p>
+          <div class="q-meta">
+            <span>172 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgxBNHzALiXwOhpj5-94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">サクラがこれなら BYD なんぞ ・・・・</p>
+          <div class="q-meta">
+            <span>172 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=Ugz2wbcijM_gliHbbdd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">日本だけでなく海外もそもそもの電力供給をどうするかを解決していない状況で電気自動車にシフトしてもどうするって話 夏や冬に電力不足になるのに</p>
+          <div class="q-meta">
+            <span>162 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgwMCgNgsX4oPQmlEJN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">EVは使い捨てという認識であってると思う。</p>
+          <div class="q-meta">
+            <span>160 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgyDxg2ZKPdQ6XMSHll4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">日本より電気代が安いアメリカでもEVが普及しているのは大都市部だけで、地方では誰も買おうとしないですね。 スマホ以上に劣悪な充電環境で電池が長持ちする訳が無いです。</p>
+          <div class="q-meta">
+            <span>147 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxcoXKvtmwXLCcY1bl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">実際に試乗しましたが軽自動車と思えない質感と乗り心地でした。</p>
+          <div class="q-meta">
+            <span>120 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=lN8xpWV09eI&lc=UgzeZIofbaSEdjoPVSl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ガソリンMT車で制御装置や安全装置が付いてない車が最強だって😂</p>
+          <div class="q-meta">
+            <span>106 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugx7TQIZuC9q5as0ddR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">そもそもEVの使い方を分かってないのに買う方が悪い リーフ40kw乗ってるけど、家で充電、遠出しても往復200キロ以内でしか使ってないからなんの不満も無い サクラなら遠出しても往復100キロ以内が実用的なのは少し調べたら分かる事なのに何故外で充電するつもりで買ってるのかが分からない😅</p>
+          <div class="q-meta">
+            <span>101 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugz0E67HHEh8lMvT0-94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スマホの電池と比べるとかなり間違うね。 テスラは10万で5%くらいだし。 初期型リーフだけだろ、ひどいのは。 他は、車本体の寿命とほぼ変わらんよ。 ハズレひかなきゃ。 賢い人は、値の下がった程度の良いサクラを乗りつぶすのが良いと思うだろうね。 一度でもEV乗ってみればわかるよ。</p>
+          <div class="q-meta">
+            <span>88 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugy-KLft0yRUdxhtUzV4AaABAg.AAK37Ws02ScAAY54mslS4t" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">やっぱりです、長い充電時間と短い走行距離や少ない充電スポット。今は買う気無しです</p>
+          <div class="q-meta">
+            <span>85 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyGaDo1aHIIMmrbEBx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ハイブリットってのは実に現実的な選択だな。</p>
+          <div class="q-meta">
+            <span>84 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgxCBTzTAlaYlhsu8nJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">中古になった途端に価格が150万円下がるのは当たり前なのです なぜなら東京に住んでいる人なら補助金がそれくらい出るのでその分値下げないと売れません</p>
+          <div class="q-meta">
+            <span>84 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgwP7SqhrXQz-mJkaQx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">軽規格で190Nmとは反則ですね。驚きました。さすがモーター。 下手な普通車だとスタートダッシュで置いてかれる😅</p>
+          <div class="q-meta">
+            <span>83 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=pLZMevDM8SM&lc=Ugwbr4ebMeEhqCi6Uat4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">会社に電気自動車6台あって、充電するコードも6本あったけど、10年で6本全部壊れたし、買い足した6本も5本壊れて、1本で6台充電してる状態💦もちろん充電間に合ってないから、翌日になっても充電されてない車が数台ありましたとさε- ( ́ー` ) あと暖房つけたら20キロも走らないうちに充電無くなるよ!どうにかしてくれ💦</p>
+          <div class="q-meta">
+            <span>79 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxPmsk10YSHnB6MPOV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">2006 アイミーブ バッテリー交換済😊 満充電で64km走れます😅 職場は8kmだから、3日に一回充電してます~ 家で充電です</p>
+          <div class="q-meta">
+            <span>78 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugy-KLft0yRUdxhtUzV4AaABAg.AAK37Ws02ScAAXUQcm22Zf" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">巧妙な罠だよね。</p>
+          <div class="q-meta">
+            <span>77 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgwG8fyBy7ZXOnCUySl4AaABAg.AAcBY_CwqAbAAhixo6bpV1" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">気になる点の方が多いコメントしておりますが、お買い物、通勤など100km程度であれば最強のモビリティだと思いますよ。オススメです。</p>
+          <div class="q-meta">
+            <span>77 likes</span>
+            <span>たびまる</span>
+            <a href="https://www.youtube.com/watch?v=awaex7OLXGo&lc=UgztrjWq8n_IrC6-XNl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">冬の渋滞、ましてや高速道路で立ち往生に巻き込まれたら命が危ない</p>
+          <div class="q-meta">
+            <span>74 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyVyerqXi7PYgdWhp94AaABAg.AAMf4Pgj9MUAASIGKeov8e" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">地方都市に住んでますが 行動範囲が決まってる、 尚且つセカンドカー扱いなら これもアリなんですよね。 (地方、田舎だと複数所有が 割と普通なんで。) でも当然ですが 狙うのは中古ですよ(笑) 多分、3年落ちからなら 爆安サクラが溢れてるハズ。</p>
+          <div class="q-meta">
+            <span>72 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzeI4h8XtxYhN6h09p4AaABAg.AAYCa-YpRQ8AAbBgsOIo4s" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">加速性能がマジでやばそう...</p>
+          <div class="q-meta">
+            <span>68 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=pLZMevDM8SM&lc=UgxPdCN9427He2COTn94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">安くリセールされてるのなら買ってみようかな笑</p>
+          <div class="q-meta">
+            <span>64 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxZBldKQPdcZ9hWKAl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">悲しい国やな...😅</p>
+          <div class="q-meta">
+            <span>60 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgwG8fyBy7ZXOnCUySl4AaABAg.AAcBY_CwqAbAAj0VMa3xom" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">軽で加速に余裕があったり質感が良いって最高。</p>
+          <div class="q-meta">
+            <span>55 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=lN8xpWV09eI&lc=Ugw4wEDuyfgM7Nl61k54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">親戚の家が急勾配の傾斜地に家があるため爆音鳴らして登ってたのが、サクラに買い替えてそれが無くなって良かったと。 家に充電器を設置して、セカンドカーとして買うならいいと思う。坂の多い地域でのチョイノリには強い。 車としての出来も割と良かった。 家に充電器が設置できなかったり、これ一台で運用するのは充電インフラを考えるとまだキツイと思う。 近所の人、一年経たずに買い替えてた。</p>
+          <div class="q-meta">
+            <span>49 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugxb8HSY09AtPBUoLdl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">やっぱ小さいEVの方が良いよね。 EVなんて巨大SUVより軽の方が理にかなってるだろうし。</p>
+          <div class="q-meta">
+            <span>48 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=lN8xpWV09eI&lc=UgzLZmhr5Ee3A1bZ1vR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">軽自動車からEV化へ進んだ方が正解</p>
+          <div class="q-meta">
+            <span>48 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=DTetS-YFKuE&lc=UgxaYDv_r2F2VxhMWEx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">少なくとも軽自動車ならほぼ当たり負けするでしょ。だから安いんだよ</p>
+          <div class="q-meta">
+            <span>46 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugzw7wwbWAFFMv1xvd94AaABAg.AAahyCiCa5QAAjDiKq2ub_" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">インフラがろくに整っていないのにEVなんか使えない。</p>
+          <div class="q-meta">
+            <span>44 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgyDa28t9d_kv2Tm4VR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">セカンドカーはEVでいいよね</p>
+          <div class="q-meta">
+            <span>44 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=DTetS-YFKuE&lc=Ugxf5LiVr1kZsduhC8h4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">どんな性能劣化特性を参考にそのコメントをされてるのか知りませんが、基本電池交換をする必要性がありません 難癖つけたい気持ちは、心の余裕のなさからでしょうか</p>
+          <div class="q-meta">
+            <span>42 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=pLZMevDM8SM&lc=UgwufczvwhBtMfW5pgJ4AaABAg.9bJPzv6c4x-9bJQPP0Sc9Q" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">トヨタも全個体電池などなどで安全性や環境汚染を抑えられれば将来のEVシフト自体は有り得る未来だと言ってますけどね。 いまはまだ技術が追いついて無いだけ。</p>
+          <div class="q-meta">
+            <span>41 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyVJ06SXC9El-qdAmR4AaABAg.AAdQrFXrasJAAiIv_p6z-4" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">売るのは自由ですが、補助金のは強制ですからねぇ・・・</p>
+          <div class="q-meta">
+            <span>41 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxOY4MSpnP9iuJd4XF4AaABAg.AASeI0RRzn5AAavqWaY2Cc" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">EV車は自宅で充電できる一軒家に住んでて遠出しない人用の車。 毎日近所の買い物や送り迎えにしか使わない人は多い。そういう人向け。 それと宅配業者ね。夜営業所で充電すればいいだけなのでガソリンスタンド行く手間もなく便利。</p>
+          <div class="q-meta">
+            <span>40 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugz5LosZN7StyzXZ6Nx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">家充電最高ですね。 外で充電は割高😅</p>
+          <div class="q-meta">
+            <span>40 likes</span>
+            <span>Kaz研究所</span>
+            <a href="https://www.youtube.com/watch?v=zR0zq1qgA5U&lc=UgwlpB4NRwTWVNE7nm54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">正に俺がそれ。9年落ち、6万キロのワゴンR50万で買いました。リッター15くらいですわ。快適ですよ~。</p>
+          <div class="q-meta">
+            <span>38 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgxCXXxOxj9KPeu26zt4AaABAg.AAqUG9kOFeTACDjkKAxfNe" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">サクラで往復70キロ雪山超えて通勤してるけどシートヒーターと膝掛けで寒くないです🤔2WDでも雪山登るしオイル交換しなくていいEV快適ですよ。 サクラは自宅で充電できる層のセカンドカーとして売っているので外野があれこれ言っても的外れかな.</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=Ugx89VwW6pUa_8PuEBR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">@RinaRina-xc5hy 金持ちのおもちゃ、間違いないです。</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgzeI4h8XtxYhN6h09p4AaABAg.AAYCa-YpRQ8AAemnG5l9iU" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">@卯舞もなか 隣町に行って帰って来るだけでギリらしいの高速には乗らないと思いますw</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=UgyVyerqXi7PYgdWhp94AaABAg.AAMf4Pgj9MUAASZkgndPP0" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">充電する場所が問題でしょうね。 自宅に設備を置くには高価だし、 出先に必ずあるとも限らない。</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugy6_CypDJaFB_DLw_Z4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">帰省先が豪雪地域なんで、EVじゃ役に立たないのよ。</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgzPIpVR6xbWi6piBeB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">サクラ買ってしまったが、加速は前車プリウス並で、静かさはプリウスを超えてる。 乗り心地も高級車並だし、軽なので街乗りなら狭い道でも扱い易い。 家庭充電なので、長距離行かなければ現状では充分満足している。 また、最近出た中国のラッコは一見良さそうだが、補助金安く、信頼性も不明だし、将来の日本撤退も心配だ。</p>
+          <div class="q-meta">
+            <span>33 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=Ugw3VOXOwrpgUhhunDJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">57万円とかぶっ飛んでてわろた。スクーターちょっとの価格で自動車が買えるのかよ</p>
+          <div class="q-meta">
+            <span>33 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=qqM1-g6oQAk&lc=UgzGQlqBBLB3ENeeC6p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">@lonestar7-e1x いつも通りの出勤時間にそんな状況になったら呑気にディーラーで充電なんかしてる余裕なんか無い、車通勤ナメすぎ。</p>
+          <div class="q-meta">
+            <span>31 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugz_OXBoxc20Jq2l9y14AaABAg.AANom1xp_ZvAAQgQI77UYF" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">持ち家で充電設備があれば足車に最適と思うけどな 静かだし田舎ならわざわざ遠くのスタンドまで給油に行く必要もない モーターのトルクは大きいから山道も得意 ちょい乗りの足車はシビアコンディションだから、エンジンなら通常の使い方より高頻度でオイル交換しなければならないがその必要もない</p>
+          <div class="q-meta">
+            <span>31 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugwi9Gt6zxCFfsUGQEV4AaABAg.AAFINwAjqL1AAPkskT_GJH" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">1.そもそも充電施設が貧弱過ぎて実質「自分で充電ソケットのある家を建てられる」人じゃないと使い勝手が悪過ぎる 2.運良く施設があっても急速充電で30分は確実に足止めされる 3.で、満充電にしても航続距離はたったの200キロ足らず 電車やらバスやら完備しててせいぜい週一しか車使わなくて良い大都市圏ならまだしも何処へ行くにも「まず車を用意しろ、話はそれからだ」な地方でEVなんか乗れる訳ないでしょって話。</p>
+          <div class="q-meta">
+            <span>30 likes</span>
+            <span>ゆっくりクルマの鼓動</span>
+            <a href="https://www.youtube.com/watch?v=4OxcWfd3K28&lc=Ugyn67ZDYOFp4Npm9s54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">サクラに乗ってますが、不満は無いですよ。 維持費も安いです。 この車は、あくまでセカンドカーです。 近場を走るには、メインよりよっぽど便利です。だからプロパイロットは付けていません。 EV云々では無く、使用目的に合わせて購入する事が大事だと思います。</p>
+          <div class="q-meta">
+            <span>30 likes</span>
+            <span>ゆっくりクルマ好きちゃんねる【車系・ゆっくり解説】</span>
+            <a href="https://www.youtube.com/watch?v=zmZbRETsH0U&lc=UgxXy51OeZsyhG5SeGR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+
+
+
+<h2>Method, and what it gets wrong</h2>
+<div class="note">
+  <b>This is not a poll.</b> People who comment are not people who buy, and
+  they skew toward enthusiasts and toward strong opinions. This measures
+  what the comment section thinks, which is a proxy for public perception
+  and a poor proxy for sales.
+  <br><br>
+  <b>Sentiment is scored by machine and sampled.</b> Comments are grouped by
+  meaning, then a multilingual model scores a sample from each group.
+  Sarcasm detection is weak, especially in Japanese — where a group reads as
+  sarcastic, its score is flagged rather than quoted as fact.
+  <br><br>
+  <b>Nothing was written by hand.</b> The clusters, counts and quotes come
+  from the pipeline. Quotes are checked against the stored corpus before
+  publication, so a paraphrase cannot reach a graphic.
+</div>
+
+<footer>
+  Nissan Sakura · 3,081 comments from 16 videos ·
+  fetched 2026-09-17 ·
+  generated 2026-09-17<br>
+  Raw data and the code that produced this are available on request.
+</footer>
+</div></body></html>
