@@ -113,9 +113,41 @@ blockquote .src a:hover{text-decoration:underline}
 .toc li{margin-bottom:6px;font-size:14.5px;break-inside:avoid}
 .toc a{color:var(--accent);text-decoration:none}
 .toc a:hover{text-decoration:underline}
+/* ── specifications ─────────────────────────────────────────
+   The car's own figures, each beside what the comment section said
+   about it. A spec row and a comment count sit in the same block
+   deliberately: the point is the pairing, not the table. */
+.specgroup{margin:26px 0 0}
+.specgroup>h3{font-size:12px;font-family:ui-monospace,monospace;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 10px;padding-bottom:7px;border-bottom:1px solid var(--hair)}
+.spec{border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
+.spec-top{display:flex;justify-content:space-between;gap:16px;
+  align-items:baseline;flex-wrap:wrap}
+.spec-label{font-size:15px;color:var(--ink-2)}
+.spec-value{font-family:ui-monospace,monospace;font-size:19px;
+  font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.spec-note{font-size:13px;color:var(--ink-3);margin:7px 0 0}
+.spec-src{font-family:ui-monospace,monospace;font-size:11px;
+  color:var(--ink-3);margin-top:8px}
+.spec-src a{color:var(--accent);text-decoration:none}
+.spec-src a:hover{text-decoration:underline}
+.spec-said{border-top:1px solid var(--hair);margin-top:11px;padding-top:10px}
+.spec-said .hd{font-family:ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  margin:0 0 7px}
+.spec-said ul{list-style:none;padding:0;margin:0}
+.spec-said li{font-size:14.5px;color:var(--ink-2);padding:3px 0}
+.spec-said li a{color:var(--accent);text-decoration:none}
+.spec-said li a:hover{text-decoration:underline}
+.spec-said .n{font-family:ui-monospace,monospace;font-size:12px;
+  color:var(--ink-3)}
+.spec-quiet{font-size:13px;color:var(--ink-3);margin-top:10px;
+  border-top:1px solid var(--hair);padding-top:9px}
 @media(max-width:560px){.toc{columns:1}
   h1{font-size:26px}
-  .wrap{padding:34px 18px 70px}}
+  .wrap{padding:34px 18px 70px}
+  .spec-top{flex-direction:column;gap:2px}}
 </style></head><body><div class="wrap">
 
 <header>
