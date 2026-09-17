@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compared — Opitrics</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="description" content="Four kei-car comment sections compared by share: how much is about the car, how much is arguing, and how much reads positive.">
+<link rel="canonical" href="https://opitrics.com/compare/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Opitrics">
+<meta property="og:title" content="One Chinese car in a Japanese segment">
+<meta property="og:description" content="Four kei-car comment sections compared by share: how much is about the car, how much is arguing, and how much reads positive.">
+<meta property="og:url" content="https://opitrics.com/compare/">
+<meta name="twitter:card" content="summary">
+<style>
+/* Same palette as the audit pages and remotion/src/theme.ts — see the
+   note on CSS in opitrics/render/provenance.py. */
+body{background:#FFFFFF;color:#000000;margin:0;
+ font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+ "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:56px 24px 80px}
+h1{font-size:30px;margin:0 0 12px;letter-spacing:-.02em}
+h2{font-size:13px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+ text-transform:uppercase;margin:38px 0 12px;padding-top:16px;
+ border-top:1px solid #BFBFBF}
+p{color:#3D3D3D;max-width:62ch}
+a{color:#0546A8}
+ul{list-style:none;padding:0;margin:32px 0 0;border-top:1px solid #BFBFBF}
+li{padding:15px 0;border-bottom:1px solid #BFBFBF}
+li:last-child{border-bottom:none}
+li a{color:#0546A8;font-weight:600;font-size:18px;text-decoration:none}
+li a:hover{text-decoration:underline}
+li span{display:block;color:#5A5A5A;font-size:13px;
+ font-family:ui-monospace,monospace;margin-top:4px}
+ul.plain{border:0;margin:0 0 16px;padding:0}
+ul.plain li{border:0;padding:3px 0 3px 18px;position:relative;
+ color:#3D3D3D;max-width:62ch}
+ul.plain li:before{content:"—";position:absolute;left:0;color:#5A5A5A}
+.lede{font-size:17px}
+.updated{font-family:ui-monospace,monospace;font-size:12px;color:#5A5A5A;
+ letter-spacing:.06em;text-transform:uppercase}
+
+/* ── comparison ─────────────────────────────────────────────
+   The four-way table scrolls inside its own box rather than
+   widening the page: five columns of figures cannot compress to
+   390px without the numbers wrapping mid-digit. */
+.tablewrap{overflow-x:auto;margin:22px 0;border:1px solid #BFBFBF}
+table.cmp{width:100%;min-width:560px;border-collapse:collapse;
+ font-size:14.5px;background:#FFFFFF}
+table.cmp th{text-align:right;font-family:ui-monospace,monospace;
+ font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+ color:#5A5A5A;font-weight:400;padding:13px 14px 10px;
+ border-bottom:1px solid #BFBFBF;white-space:nowrap}
+table.cmp th:first-child{text-align:left}
+table.cmp td{padding:12px 14px;border-bottom:1px solid #E0E0E0;
+ color:#000000;text-align:right;font-family:ui-monospace,monospace;
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+table.cmp td:first-child{text-align:left;font-family:inherit;
+ color:#3D3D3D}
+table.cmp tr:last-child td{border-bottom:none}
+table.cmp td a{color:#0546A8;text-decoration:none;font-weight:600}
+table.cmp td a:hover{text-decoration:underline}
+table.cmp .out{font-weight:700}
+table.cmp tbody tr:hover td{background:#F4F4F4}
+figure.card{margin:26px 0 0}
+figure.card img{display:block;width:100%;height:auto;
+ border:1px solid #BFBFBF}
+figure.card figcaption{font-size:13.5px;color:#5A5A5A;margin-top:9px;
+ max-width:70ch}
+figure.card figcaption a{color:#0546A8}
+.callout{border-left:2px solid #0546A8;background:#F1F5FB;
+ padding:15px 19px;margin:24px 0;font-size:15px;color:#3D3D3D}
+.callout b{color:#000000}
+.callout.warn{border-left-color:#8A5A00;background:#FBF6EE}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid #BFBFBF;
+ color:#5A5A5A;font-size:13.5px}
+footer p{color:inherit;margin:0 0 10px;max-width:62ch}
+footer p:last-child{margin-bottom:0}
+footer a{color:#0546A8}
+</style></head><body><div class="wrap">
+
+<h1>One Chinese car in a Japanese segment</h1>
+<p class="updated">4 corpora · 21,833 comments analysed</p>
+<p class="lede">Four kei cars, four comment sections, the same four
+questions asked of each. The BYD Racco sits at the extreme of all four,
+and on two of them it is clear of the other three by more than they
+differ from each other. It is also the only car here that is not
+Japanese.</p>
+
+<div class="callout warn"><b>The corpora are not the same size.</b> The largest is 11× the smallest, so every figure here is a share of that car's own comments. A table of totals would rank these cars by how much they are watched, which is not what any of them measures.</div>
+
+<h2>The four, side by side</h2>
+<p>Every figure is a share of that car's own clustered comments. Follow a
+car's name to the analysis and the comments behind it.</p>
+<div class="tablewrap">
+<table class="cmp">
+  <thead><tr><th>car</th><th>comments</th><th>about the car</th><th>arguing</th><th>reads positive</th><th>unscorable</th></tr></thead>
+  <tbody>
+<tr><td><a href="/byd-racco/">BYD Racco</a></td><td>14,821</td><td>78%</td><td>22%</td><td class="out">12%</td><td class="out">24%</td></tr>
+<tr><td><a href="/nissan-sakura/">Nissan Sakura</a></td><td>2,939</td><td>91%</td><td>9%</td><td>33%</td><td>10%</td></tr>
+<tr><td><a href="/suzuki-e-sky/">Suzuki e Sky</a></td><td>2,749</td><td>89%</td><td>11%</td><td>38%</td><td>7%</td></tr>
+<tr><td><a href="/honda-n-box/">Honda N-Box</a></td><td>1,324</td><td>84%</td><td>16%</td><td>44%</td><td>2%</td></tr>
+  </tbody>
+</table>
+</div>
+<p style="font-size:13.5px;color:#5A5A5A">Bold marks a car that sits
+clear of the other three on that measure — extreme, not merely highest.
+<b>About the car</b> is the share on the vehicle rather than the video or
+its presenter. <b>Arguing</b> is the remainder. <b>Reads positive</b> and
+<b>unscorable</b> are shares of comments in themes scored positive, and
+in themes flagged too sarcastic to score.</p>
+
+<h2>What the split says</h2>
+<p>Three of these cars produce a comment section about a car. The fourth
+produces an argument about where it was built. A fifth of the Racco's
+comments are not about the vehicle at all, and a quarter are too
+sarcastic to score — that sarcasm share is ten times the N-Box's, and
+the positive share is under a third of it.</p>
+<p>The two clear results are sentiment, not subject matter. On how much
+of the conversation is about the car, the Racco leads but the three
+Japanese cars differ among themselves by as much, so that gap is not
+doing the work. What separates the Racco is <em>how</em> its comment
+section talks, not what it talks about.</p>
+<p>That is the finding no single corpus gives you: not that the Racco is
+disliked, but that it is <em>argued about</em> in a way its rivals are
+not.</p>
+
+<h2>Each pair in full</h2>
+<figure class="card">
+  <img src="compare-byd-racco-vs-nissan-sakura.png" alt="BYD Racco compared with Nissan Sakura across four shares" loading="lazy">
+  <figcaption>BYD Racco against Nissan Sakura.
+    Check either corpus: <a href="/byd-racco/">BYD Racco</a>
+    · <a href="/nissan-sakura/">Nissan Sakura</a></figcaption>
+</figure>
+<figure class="card">
+  <img src="compare-byd-racco-vs-suzuki-e-sky.png" alt="BYD Racco compared with Suzuki e Sky across four shares" loading="lazy">
+  <figcaption>BYD Racco against Suzuki e Sky.
+    Check either corpus: <a href="/byd-racco/">BYD Racco</a>
+    · <a href="/suzuki-e-sky/">Suzuki e Sky</a></figcaption>
+</figure>
+<figure class="card">
+  <img src="compare-byd-racco-vs-honda-n-box.png" alt="BYD Racco compared with Honda N-Box across four shares" loading="lazy">
+  <figcaption>BYD Racco against Honda N-Box.
+    Check either corpus: <a href="/byd-racco/">BYD Racco</a>
+    · <a href="/honda-n-box/">Honda N-Box</a></figcaption>
+</figure>
+
+<h2>What this does not measure</h2>
+<div class="callout">
+<b>These are comment sections, not buyers.</b> People who comment are not
+people who buy, and they skew toward enthusiasts and strong opinions.
+Nothing here says anything about sales, demand, or which car is better.
+<br><br>
+<b>There is no single "how positive" number</b>, deliberately. Average
+polarity across a corpus mixes themes about the car with themes about
+the brand's nationality, and these four differ in exactly that mix — so
+one warmth figure would report a car as better liked when it is only
+less argued about.
+<br><br>
+<b>Sarcasm detection is weak, particularly in Japanese.</b> The
+unscorable column is that uncertainty made visible rather than hidden
+inside another number.
+</div>
+
+<footer><p><a href="/">All analyses</a> · <a href="/terms">Terms</a> ·
+<a href="/privacy">Privacy</a> ·
+<a href="mailto:info@opitrics.com">info@opitrics.com</a></p>
+<p>Comment authors are not named. The permalink is what makes a quote
+checkable, so the handle is withheld.</p></footer>
+</div></body></html>

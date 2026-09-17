@@ -2,6 +2,18 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Privacy — Opitrics</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="description" content="This site sets no cookies, runs no analytics and has no script tag on any page.">
+<link rel="canonical" href="https://opitrics.com/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Opitrics">
+<meta property="og:title" content="Privacy — Opitrics">
+<meta property="og:description" content="This site sets no cookies, runs no analytics and has no script tag on any page.">
+<meta property="og:url" content="https://opitrics.com/privacy/">
+<meta name="twitter:card" content="summary">
 <style>
 /* Same palette as the audit pages and remotion/src/theme.ts — see the
    note on CSS in opitrics/render/provenance.py. */
@@ -29,6 +41,39 @@ ul.plain li:before{content:"—";position:absolute;left:0;color:#5A5A5A}
 .lede{font-size:17px}
 .updated{font-family:ui-monospace,monospace;font-size:12px;color:#5A5A5A;
  letter-spacing:.06em;text-transform:uppercase}
+
+/* ── comparison ─────────────────────────────────────────────
+   The four-way table scrolls inside its own box rather than
+   widening the page: five columns of figures cannot compress to
+   390px without the numbers wrapping mid-digit. */
+.tablewrap{overflow-x:auto;margin:22px 0;border:1px solid #BFBFBF}
+table.cmp{width:100%;min-width:560px;border-collapse:collapse;
+ font-size:14.5px;background:#FFFFFF}
+table.cmp th{text-align:right;font-family:ui-monospace,monospace;
+ font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+ color:#5A5A5A;font-weight:400;padding:13px 14px 10px;
+ border-bottom:1px solid #BFBFBF;white-space:nowrap}
+table.cmp th:first-child{text-align:left}
+table.cmp td{padding:12px 14px;border-bottom:1px solid #E0E0E0;
+ color:#000000;text-align:right;font-family:ui-monospace,monospace;
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+table.cmp td:first-child{text-align:left;font-family:inherit;
+ color:#3D3D3D}
+table.cmp tr:last-child td{border-bottom:none}
+table.cmp td a{color:#0546A8;text-decoration:none;font-weight:600}
+table.cmp td a:hover{text-decoration:underline}
+table.cmp .out{font-weight:700}
+table.cmp tbody tr:hover td{background:#F4F4F4}
+figure.card{margin:26px 0 0}
+figure.card img{display:block;width:100%;height:auto;
+ border:1px solid #BFBFBF}
+figure.card figcaption{font-size:13.5px;color:#5A5A5A;margin-top:9px;
+ max-width:70ch}
+figure.card figcaption a{color:#0546A8}
+.callout{border-left:2px solid #0546A8;background:#F1F5FB;
+ padding:15px 19px;margin:24px 0;font-size:15px;color:#3D3D3D}
+.callout b{color:#000000}
+.callout.warn{border-left-color:#8A5A00;background:#FBF6EE}
 footer{margin-top:48px;padding-top:20px;border-top:1px solid #BFBFBF;
  color:#5A5A5A;font-size:13.5px}
 footer p{color:inherit;margin:0 0 10px;max-width:62ch}
