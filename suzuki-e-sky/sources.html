@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sources · Suzuki e Sky</title>
+<style>
+/* Mirrors remotion/src/theme.ts. A viewer taps from a short straight to
+   this page; two palettes read as two publications, and the whole point
+   of the link is that it is the same one. The contrast ratios there were
+   measured, not estimated — carry the values, do not re-pick them by eye.
+   `--ink-3` in particular replaces a warm grey that ran near 3.5:1 on
+   small uppercase labels, the same failure theme.ts records for #909090. */
+/* --soft is a fill (code, tints); --hair is the lighter internal rule.
+   They were one warm token before, which on white made the internal
+   hairlines fainter than the warm original measured. */
+:root{--bg:#FFFFFF;--card:#FFFFFF;--line:#BFBFBF;--soft:#F4F4F4;--hair:#E0E0E0;
+  --ink:#000000;--ink-2:#3D3D3D;--ink-3:#5A5A5A;--accent:#0546A8;--ok:#0A5F2F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+  "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px 90px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:26px}
+.eyebrow{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 9px}
+h1{font-size:31px;line-height:1.15;margin:0 0 12px;letter-spacing:-.018em}
+.lede{color:var(--ink-2);margin:0;max-width:66ch}
+h2{font-size:14px;font-family:ui-monospace,monospace;letter-spacing:.13em;
+  text-transform:uppercase;margin:44px 0 14px;padding-top:18px;
+  border-top:1px solid var(--ink)}
+/* Hairlines come from the cells, not from a gap over a coloured
+   container. With auto-fit, a row that does not divide evenly leaves
+   empty tracks, and those tracks paint the container background as a
+   solid block — four stats over three columns on a phone. Bordering
+   each cell wraps cleanly at any count and any width. */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:0;margin:22px 0;border:1px solid var(--line);border-width:1px 0 0 1px}
+.stat{background:var(--card);padding:15px 17px;
+  border:1px solid var(--line);border-width:0 1px 1px 0}
+.stat b{display:block;font-size:23px;font-variant-numeric:tabular-nums;
+  font-family:ui-monospace,monospace}
+.stat span{font-size:10.5px;font-family:ui-monospace,monospace;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-family:ui-monospace,monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:400;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+td{padding:11px 12px 11px 0;border-bottom:1px solid var(--hair);
+  color:var(--ink-2);vertical-align:top}
+td a{color:var(--accent)}
+.num{font-family:ui-monospace,monospace;text-align:right;font-variant-numeric:tabular-nums}
+.q{background:var(--card);border:1px solid var(--line);padding:15px 17px;
+  margin-bottom:11px}
+.q-text{font-size:16px;line-height:1.5;margin:0 0 10px}
+.q-meta{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  border-top:1px solid var(--hair);padding-top:9px}
+.q-meta a{color:var(--accent);text-decoration:none}
+.q-meta a:hover{text-decoration:underline}
+.note{border-left:2px solid var(--accent);background:#F1F5FB;padding:15px 19px;
+  margin:22px 0;font-size:15px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+.note.ok{border-left-color:var(--ok);background:#F0F7F2}
+code{font-family:ui-monospace,monospace;font-size:13px;background:var(--soft);
+  padding:1px 5px}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:13.5px}
+
+/* ── report ─────────────────────────────────────────────────
+   Charts are embedded as data URIs so a page is one file with no
+   second request that can 404. A wide chart scrolls inside its own
+   box rather than widening the page — the scatter is unreadable
+   below about 700px and squeezing it to fit helps nobody. */
+figure{margin:24px 0}
+figure .scroll{overflow-x:auto;border:1px solid var(--line)}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figure.wide img{min-width:860px}
+figcaption{font-size:13.5px;color:var(--ink-3);margin-top:9px;max-width:70ch}
+.finding{border-left:2px solid var(--accent);padding:2px 0 2px 17px;margin:26px 0}
+.finding h3{font-size:19px;margin:0 0 7px;letter-spacing:-.01em;line-height:1.25}
+.finding p{margin:0;color:var(--ink-2)}
+.group{margin:34px 0 0}
+.group>h3{font-size:12px;font-family:ui-monospace,monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;
+  padding-bottom:7px;border-bottom:1px solid var(--hair)}
+.theme{border:1px solid var(--line);padding:15px 17px;margin-bottom:11px}
+.theme-top{display:flex;justify-content:space-between;gap:14px;
+  align-items:baseline;flex-wrap:wrap}
+.theme h4{font-size:16.5px;margin:0 0 6px;letter-spacing:-.01em}
+.theme .sum{color:var(--ink-2);font-size:14.5px;margin:0 0 11px}
+.bar{display:flex;height:7px;margin:11px 0 9px;overflow:hidden}
+.bar i{display:block}
+.bar .p{background:var(--ok)}
+.bar .u{background:var(--ink-3)}
+.bar .n{background:#A81C19}
+.theme-meta{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);display:flex;gap:13px;flex-wrap:wrap}
+.pill{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.06em;
+  text-transform:uppercase;border:1px solid var(--line);padding:2px 7px;
+  color:var(--ink-3);white-space:nowrap}
+.pill.warn{border-color:#8A5A00;color:#8A5A00}
+blockquote{margin:11px 0 0;padding:11px 0 0;border-top:1px solid var(--hair);
+  font-size:15px;line-height:1.5;color:var(--ink)}
+blockquote .src{display:block;font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);margin-top:7px}
+blockquote .src a{color:var(--accent);text-decoration:none}
+blockquote .src a:hover{text-decoration:underline}
+.toc{margin:22px 0 0;padding:0;list-style:none;columns:2;column-gap:26px}
+.toc li{margin-bottom:6px;font-size:14.5px;break-inside:avoid}
+.toc a{color:var(--accent);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+@media(max-width:560px){.toc{columns:1}
+  h1{font-size:26px}
+  .wrap{padding:34px 18px 70px}}
+</style></head><body><div class="wrap">
+
+<header>
+  <p class="eyebrow">Check the work</p>
+  <h1>Every number and quote behind the Suzuki e Sky analysis</h1>
+  <p class="lede">
+    Nothing here asks to be believed. Every comment below links to the
+    original on YouTube — click one and you will land on that exact
+    comment, on that exact video, with its like count visible. A quote
+    that was invented would not resolve.
+  </p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>2,948</b><span>comments fetched</span></div>
+  <div class="stat"><b>20</b><span>videos</span></div>
+  <div class="stat"><b>2,749</b><span>analysed</span></div>
+  <div class="stat"><b>200</b><span>quotes linked</span></div>
+</div>
+
+<div class="note ok">
+  <b>How to verify a quote.</b> Click any “open on YouTube” link. YouTube
+  will load that video and scroll to the comment. Compare the text and the
+  like count with what is shown here. Like counts drift over time — the
+  numbers here are from 2026-09-17,
+  so expect small differences on popular comments.
+</div>
+
+<h2>Source videos</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Every video whose comment section was read. The comment counts are what
+  YouTube reported at fetch time; ours include replies, which YouTube's
+  headline number excludes.
+</p>
+<table>
+  <thead><tr><th>video</th><th>channel</th>
+    <th class="num">comments</th><th class="num">id</th></tr></thead>
+  <tbody><tr><td><a href='https://www.youtube.com/watch?v=NaaJpxd826s' target='_blank' rel='noopener'>【スズキ eスカイ】電池少なめ26kWhだが310km走る軽EV!? サーキット試乗でわかった「距離以外の凄み」</a></td><td>ウナ丼_STRUT_エンスーCARガイド</td><td class='num'>825</td><td class='num'><code>NaaJpxd826s</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=attF92rgwVw' target='_blank' rel='noopener'>スズキ eスカイ【先行試乗】満を持してついに登場!! スズキらしさを存分に詰め込んだ新型軽EV!!  E-CarLife with 五味やすたか</a></td><td>E-CarLife with 五味やすたか</td><td class='num'>591</td><td class='num'><code>attF92rgwVw</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=C1gVWhIZvg4' target='_blank' rel='noopener'>【ラッコにスズキが反撃!?】スズキ初の軽EV 新型「e SKY」を内外装徹底チェック！ 軽EV戦争が一気に面白くなる！</a></td><td>LOVECARS!TV!</td><td class='num'>246</td><td class='num'><code>C1gVWhIZvg4</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=YBezh0CXCHU' target='_blank' rel='noopener'>見た目は軽、でも走りは!?　スズキの軽乗用EV「eスカイ」に乗ってみた【藤トモCHECK】</a></td><td>driver channel</td><td class='num'>231</td><td class='num'><code>YBezh0CXCHU</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=Pw3ZtJlj4WA' target='_blank' rel='noopener'>【消去覚悟の超正直批評】スズキの軽EV新型e-SKYが電撃発表！そのデザインを現役カーデザイナーが忖度なしレビュー【許して…】</a></td><td>【トキデザ】現役カーデザイナーの車情報+デザイン解説byとっ</td><td class='num'>165</td><td class='num'><code>Pw3ZtJlj4WA</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=6sQB6HWUZSM' target='_blank' rel='noopener'>【ラッコに負けてない！】スズキ 新型 e SKY を初試乗！ 乗れば乗るほど“素直な軽EV” 価格次第で大本命に!?</a></td><td>LOVECARS!TV!</td><td class='num'>134</td><td class='num'><code>6sQB6HWUZSM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=gN6XLxpm0tM' target='_blank' rel='noopener'>竹岡 圭とスズキｅ SKY「新型軽自動車イースカイをプロトで気持ちよ～く初試乗！」【TAKEOKA KEI ×SUZUKI ｅ SKY】</a></td><td>圭Tube☆竹岡圭のカートークバラエティ☆</td><td class='num'>112</td><td class='num'><code>gN6XLxpm0tM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=su20nur67ao' target='_blank' rel='noopener'>【スズキの本気】新型軽EV「e SKY(eスカイ)」試乗! 加速と静粛性がヤバいw 航続距離310kmとサーキットもイケる走りの実力は? BYDラッコ打倒な</a></td><td>クルマ買う系チャンネル「ワンソクTube」</td><td class='num'>111</td><td class='num'><code>su20nur67ao</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=-DGCg8pEVsg' target='_blank' rel='noopener'>スズキ初の軽乗用EV 新型「e SKY」先行情報公開</a></td><td>スズキ株式会社【広報】</td><td class='num'>98</td><td class='num'><code>-DGCg8pEVsg</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=hFbMQOzSqgc' target='_blank' rel='noopener'>スズキ軽EVが凄い！26kWhで310km「eスカイ」BYDラッコより小さい電池でほぼ同じ航続距離</a></td><td>ふかばす交通チャンネル</td><td class='num'>93</td><td class='num'><code>hFbMQOzSqgc</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=fl3qNgmpNUM' target='_blank' rel='noopener'>【緊急速報】BYD「Racco」とガチンコ対決？ スズキが発表した軽自動車EV「e-SKY」を最速で紹介！</a></td><td>Premium Stage電気自動車と再生可能エネルギー</td><td class='num'>91</td><td class='num'><code>fl3qNgmpNUM</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=q_QkvtxX__o' target='_blank' rel='noopener'>SUZUKI e SKY【プロトタイプ試乗】今秋デビューの軽乗用EVは新規市場を開拓するか</a></td><td>StartYourEnginesX</td><td class='num'>71</td><td class='num'><code>q_QkvtxX__o</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=D3_PN4y3iEE' target='_blank' rel='noopener'>【先行試乗】スズキ軽EVの出来栄えは？発売予定のe SKYプロトタイプに試乗</a></td><td>テレ東BIZ ダイジェスト</td><td class='num'>55</td><td class='num'><code>D3_PN4y3iEE</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=ewGOF8dsp-o' target='_blank' rel='noopener'>【値段次第で爆売れ⁉︎】 スズキ 新型 eスカイ 内外装＆試乗レポート！イースカイはイーネダンで登場なるか！？【SUZUKI e SKY 2026】</a></td><td>GOOD CARLIFE Channel /ゼミッタ</td><td class='num'>51</td><td class='num'><code>ewGOF8dsp-o</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=DF1uYWhvq2E' target='_blank' rel='noopener'>スズキ初の軽EV「eSKY」公開！軽EV戦国時代へ【SATV特集】</a></td><td>静岡朝日テレビニュース</td><td class='num'>41</td><td class='num'><code>DF1uYWhvq2E</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=SOGWuPQndnk' target='_blank' rel='noopener'>【次期軽EV】スズキ ビジョン eスカイは次のスズキの軽EV! そして日本で見れないビクトリスも展示！【JMS2025】</a></td><td>LOVECARS!TV!</td><td class='num'>24</td><td class='num'><code>SOGWuPQndnk</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=uhzKgc_Rzo8' target='_blank' rel='noopener'>New Suzuki e Sky Small Electric Car Debuts</a></td><td>RushLane</td><td class='num'>6</td><td class='num'><code>uhzKgc_Rzo8</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=FGmJhUDAyNY' target='_blank' rel='noopener'>【新型EV「e SKY」 】スズキ初の軽EV「e SKY」秋登場！航続310km＆200万円台！？日産サクラ超えの衝撃…買いなのか？【クルマのホンネ 】</a></td><td>クルマのホンネ</td><td class='num'>2</td><td class='num'><code>FGmJhUDAyNY</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=kAx3C1P6oWo' target='_blank' rel='noopener'>【軽EV革命】スズキ新型「イー・スカイ」が凄い！26kWhで航続310km、サクラ超えの電費性能に驚愕| #スズキ #イースカイ #esky</a></td><td>車の話</td><td class='num'>1</td><td class='num'><code>kAx3C1P6oWo</code></td></tr>
+<tr><td><a href='https://www.youtube.com/watch?v=3VYnDmXPmyQ' target='_blank' rel='noopener'>【JMS2025】SUZUKI Vision e-Sky 前向きで明るい気持ちになれる”ちょうど良い”軽乗用BEV #スズキ</a></td><td>The Reverter</td><td class='num'>0</td><td class='num'><code>3VYnDmXPmyQ</code></td></tr></tbody>
+</table>
+
+<h2>Quoted comments · 200</h2>
+<p style="color:var(--ink-2);margin:0 0 16px">
+  Ranked by likes. Every quote used anywhere in the analysis, its charts
+  or its threads appears here with a link to its source.
+</p>
+<div class="q">
+          <p class="q-text">スズキが出したのなら、時代の変わり目なのかもしれない。</p>
+          <div class="q-meta">
+            <span>644 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzbgbIUAPlNKc8LpGd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">このタイミングでのe skyの発表......スズキさん、狙ってましたね?</p>
+          <div class="q-meta">
+            <span>335 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgztQE9s5ZsQHM6Y_1R4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">航続距離300km超えになってくるとかなり実用的に感じます</p>
+          <div class="q-meta">
+            <span>281 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzK9l6PYX83CWmKejZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">Evの正解は軽自動車なんじゃないか?</p>
+          <div class="q-meta">
+            <span>208 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgznEdSiaryxiZwjRFZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキが本気出した!</p>
+          <div class="q-meta">
+            <span>175 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgwcAT7iLznTuJg18ul4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ぶっちゃけウインカーなんて中から見えないし電球でも全然いい派</p>
+          <div class="q-meta">
+            <span>122 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgxD4c1RKsGNozZZCHV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">変に未来感を出していないのが好印象。 シフトレバーも普通なのが良い。</p>
+          <div class="q-meta">
+            <span>95 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgxdsBzyWq3DMaOqhs14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">EV買わなきゃいけないとしたら BYDよりスズキ選ぶ人がほとんどだろうから。 でも全固体電池が出てからだよね。</p>
+          <div class="q-meta">
+            <span>94 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgztQE9s5ZsQHM6Y_1R4AaABAg.A_sV-V-IXw2A_sfRXgBd2T" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">EVである前に,軽自動車である。さすがSuzukiですね~!(^^)!</p>
+          <div class="q-meta">
+            <span>94 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=YBezh0CXCHU&lc=Ugwtjb1zKOgyRlau8Ax4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ストレートのシフトゲート!いいと思います!!</p>
+          <div class="q-meta">
+            <span>93 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugx_C9RBx60ZyRrdyE94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキはなんだかんだちょうどいいを作る天才な気がする。シフトも結局こういうのが操作しやすい</p>
+          <div class="q-meta">
+            <span>86 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugx1bOky0VsxDPn0m8h4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ウインカーは豆球でいいのよ。LEDは眩しくて嫌だ</p>
+          <div class="q-meta">
+            <span>83 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgxhnoryS4UBEJ9V4P54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">なんか初めてEV欲しくなりました🚙〰️</p>
+          <div class="q-meta">
+            <span>73 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgyRe0hmYssmlMZqjf14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">バッテリーがBYD製なの知らない人多いからね</p>
+          <div class="q-meta">
+            <span>65 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgzgO9rI7JkhSSH46554AaABAg.A_shSZEDYLUA_smnNpfTzc" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">足車としてめちゃくちゃ良さそうですね・・</p>
+          <div class="q-meta">
+            <span>61 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=Ugw2f8CTBHlHfQGZBtl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">シフトがストレートゲートというだけでも高評価!</p>
+          <div class="q-meta">
+            <span>56 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgxNQ1UioV3u4P3fXV54AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">かわいい。 ラパンタイプも作って欲しい。</p>
+          <div class="q-meta">
+            <span>53 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgwX7BdhoLtSETKnsdx4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ものは悪くなさそうだし、問題は値段がいくらかですよね</p>
+          <div class="q-meta">
+            <span>53 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugy-85uGxISUQ8Ya8fN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">鈴木修さんなら、これを社用車にしていただろうな。</p>
+          <div class="q-meta">
+            <span>53 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=Ugy514WRzwpR_AcouRd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">「小さいスイフト」! そういうのがほしかった!</p>
+          <div class="q-meta">
+            <span>51 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=YBezh0CXCHU&lc=Ugy7sDF0aeCPZoCdTw14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ほんとにスズキらしいデザインだと思う</p>
+          <div class="q-meta">
+            <span>49 likes</span>
+            <span>【トキデザ】現役カーデザイナーの車情報+デザイン解説by</span>
+            <a href="https://www.youtube.com/watch?v=Pw3ZtJlj4WA&lc=UgylU6V0qDNi4_jJ_-p4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">目が先代アルトっぽいですね 内外装の割り切りもスズキの軽って感じ これは相当安くないと許されない</p>
+          <div class="q-meta">
+            <span>49 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgyCRhw8t355i37eQW94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキなら安心して買えますね❤</p>
+          <div class="q-meta">
+            <span>46 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzPKfUjzS-O_y2Av414AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">平和な軽BEV😊</p>
+          <div class="q-meta">
+            <span>44 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgyjeMwdKpIU1KgjArp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">私60歳ですけど逆にサクラとか先進すぎるデザインよりはe-skyのほうが普段の生活になじみやすい気がします。電気らしくないところがミソかもしれませんね。リタイヤした年齢層をターゲットにしている感もありますね。これで後席スライドなら爆発しそう</p>
+          <div class="q-meta">
+            <span>43 likes</span>
+            <span>【トキデザ】現役カーデザイナーの車情報+デザイン解説by</span>
+            <a href="https://www.youtube.com/watch?v=Pw3ZtJlj4WA&lc=UgzvorwUIwfKHg65KMd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ヘッドライトが先代アルトテールレンズが現行アルトに似てるから全体的にアルトに感じるのは気のせいかな?</p>
+          <div class="q-meta">
+            <span>43 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzUUjy2vkTGqo0IClN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">RACCOより200kgほど軽いのが良いですね 早く街中試乗を観たいです😊</p>
+          <div class="q-meta">
+            <span>43 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgwRgBU2umu0JE9RDul4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">地方は人手不足で ガススタがどんどん減っているから もうEVしかない🥺</p>
+          <div class="q-meta">
+            <span>40 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgylC58s7JFY3d8uU5N4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキならという安心感 完成度も高い</p>
+          <div class="q-meta">
+            <span>39 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgwH86Wo-63PDkpgCCp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">補助金がどれくらいなのか?と充電環境が整えば十分あり❤ スズキ大好き❤</p>
+          <div class="q-meta">
+            <span>38 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgyvcP3mDR-TeZfRXoR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">素のグレードで補助金入れて150万くらいなら欲しい。</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=YBezh0CXCHU&lc=Ugy_zAEvgH2aJs1clMR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">背の高いアルトに見える</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>圭Tube☆竹岡圭のカートークバラエティ☆</span>
+            <a href="https://www.youtube.com/watch?v=gN6XLxpm0tM&lc=UgwI4DyDNrfyurtZYap4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">アルトみたいに軽のベーシックになると良いなぁ</p>
+          <div class="q-meta">
+            <span>37 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgwQGz2jJge6GMlaJ_t4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキの内装って感じの安心感 あと安くするためになんぼか流用してそうな雰囲気もある。</p>
+          <div class="q-meta">
+            <span>36 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgxH2ZlGBYstjZVox_F4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">正直軽自動車クラスならこのくらいのトルクでも十分すぎるんだよな あと内装のいろんな部分が共用パーツ使ってるね。いつものスズキ流。</p>
+          <div class="q-meta">
+            <span>35 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgyYwMO5VqdnFo5DMDZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">スズキがどれだけ車を安く作ることを重視し、妥協点を模索しながらデザインしているかということがよくわかりました。 まさにスズキらしいデザインですね。</p>
+          <div class="q-meta">
+            <span>34 likes</span>
+            <span>【トキデザ】現役カーデザイナーの車情報+デザイン解説by</span>
+            <a href="https://www.youtube.com/watch?v=Pw3ZtJlj4WA&lc=Ugyu8_PZxVqtl9jnCyB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">かなりいろいろなところをコストダウンしてるように見える 価格に期待</p>
+          <div class="q-meta">
+            <span>34 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgympTsPAmDCYdTmTT14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">一度は電気自動車に乗ってみたいと思う人は買っちゃう</p>
+          <div class="q-meta">
+            <span>34 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=6sQB6HWUZSM&lc=UgyLfJMUwbjHMLPVhzB4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ようやく、軽EVに参入したね!頑張れスズキ!</p>
+          <div class="q-meta">
+            <span>33 likes</span>
+            <span>スズキ株式会社【広報】</span>
+            <a href="https://www.youtube.com/watch?v=-DGCg8pEVsg&lc=UgzjwQcTrzbTSxH9AJV4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">やっと買えるEVが出たね! 楽しみです!</p>
+          <div class="q-meta">
+            <span>33 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugx6FyXzcXJnF6o-9vd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">eスカイ、めちゃ良さそう! 流石スズキだ。</p>
+          <div class="q-meta">
+            <span>29 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgyVczue3IqDnFOh_FR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">内外装共に好印象です!早く詳細出ないかな〜😊</p>
+          <div class="q-meta">
+            <span>29 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=YBezh0CXCHU&lc=UgzyOfapGcXhUeOZIzd4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">バッテリーはBYD製?</p>
+          <div class="q-meta">
+            <span>28 likes</span>
+            <span>ふかばす交通チャンネル</span>
+            <a href="https://www.youtube.com/watch?v=hFbMQOzSqgc&lc=UgzG2ktlEEdW0dooWYN4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">意外と室内高もあり昔のワゴンR的な感じでGSも無くなりつつある限界地域の足にいいな。 ラッコ程装備もいらない高齢層や通勤通学に最適。</p>
+          <div class="q-meta">
+            <span>28 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=6sQB6HWUZSM&lc=Ugw5SUvr38nUO5Gj6SJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">コストの落とし方がアルトのそれすぎる...!大きさ的にはワゴンRだけど内装見るとEVのアルトって感じだ......。</p>
+          <div class="q-meta">
+            <span>28 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgyLqe9jTefvel3ihzp4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">E-パワーに乗ってるとワンペダルが非常に疲れない楽な事に気が付きます。 スズキeスカイは売れると思う。</p>
+          <div class="q-meta">
+            <span>27 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=6sQB6HWUZSM&lc=UgwqWaHCbT07kvMdoy14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">この車の燃費チャレンジ是非期待してます!</p>
+          <div class="q-meta">
+            <span>27 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugzr31aDAvxm2WvAxpZ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">アルトのEV版みたいな感じですかね。 楽しみです。</p>
+          <div class="q-meta">
+            <span>27 likes</span>
+            <span>スズキ株式会社【広報】</span>
+            <a href="https://www.youtube.com/watch?v=-DGCg8pEVsg&lc=UgwROyVI526aWm_NzKt4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">RACCOのほうが良さそうだねって書くと叩かれそうだけど。。。。</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgwFh9qZ_-lmak4JcSl4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">安いEVを作るのであれば評価できますね。 日常の足に高級感はいらないな。 仕事に行って帰るだけだしね。</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzlTYJHaWWtPCa7VoJ4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">発売され比較動画を作る際、 是非ともコレとサクラとNワンeの3車種比較をお願い致します!</p>
+          <div class="q-meta">
+            <span>26 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgyQ5F__NA7Ljfh_8d14AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">EVには全く興味ない立場でしたが、これは”そそられ”ますね。eSKYは 通常の軽自動車の動力”だけ”モーターに置き換えたような、まったくムリのないクルマに思えますね。楽しみです。</p>
+          <div class="q-meta">
+            <span>25 likes</span>
+            <span>LOVECARS!TV!</span>
+            <a href="https://www.youtube.com/watch?v=6sQB6HWUZSM&lc=UgzOSCknxp7dY_5Ft4l4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">航続距離が310kmでBYDの320kmとほぼ同じか。サイズは違うけど。 これなら、スズキの方が安心感で買っちゃうな。</p>
+          <div class="q-meta">
+            <span>24 likes</span>
+            <span>テレ東BIZ ダイジェスト</span>
+            <a href="https://www.youtube.com/watch?v=D3_PN4y3iEE&lc=UgzaoymR7KCxIMrm7tR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">問題は値段ですよ 補助金無しで200万切りして BYDをおったまげさせてほしい 補助金当て込んだ258万とかはやめて😢</p>
+          <div class="q-meta">
+            <span>24 likes</span>
+            <span>スズキ株式会社【広報】</span>
+            <a href="https://www.youtube.com/watch?v=-DGCg8pEVsg&lc=Ugz77VRj3byoX5OF7S94AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">無慈悲なこと言うけど、この手の車載バッテリーはもう日本は中国に勝てる要素無いよ 投資されているならよくおわかりかとおもいますのでお節介かもしれませんが。。。</p>
+          <div class="q-meta">
+            <span>24 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=Ugy6tIDy4CYRNsGLK8p4AaABAg.A_sTeUC2gyYA_sUXrfCD6N" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">電費だけは軽が追求してきた技術がそのまま出てるね 26kWhで310kmはスゴイわ</p>
+          <div class="q-meta">
+            <span>23 likes</span>
+            <span>driver channel</span>
+            <a href="https://www.youtube.com/watch?v=YBezh0CXCHU&lc=Ugz-zg9S0RBVYPYbP0B4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">バッテリーがBYD系なのに国産メーカーの商品なのでコメ欄は平和ですね笑 市場を徹底的にリサーチするスズキが本気の軽EVを出してくるってことは日本もBEVの時代に突入するんですかね〜内装も共有パーツ使いまくってる辺り本気ですよコレ</p>
+          <div class="q-meta">
+            <span>22 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgwkL7MgR36u5DSdG354AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">@otto5213 どう考えても成功する方向ですよこれ見せられたら</p>
+          <div class="q-meta">
+            <span>22 likes</span>
+            <span>ウナ丼_STRUT_エンスーCARガイド</span>
+            <a href="https://www.youtube.com/watch?v=NaaJpxd826s&lc=UgzbgbIUAPlNKc8LpGd4AaABAg.A_sWDjv4hlrA_taHS78m1_" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">嫌いではないけど、これ見たらBYDすごいなと思ってしまった..。</p>
+          <div class="q-meta">
+            <span>22 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgzbROKAykJvbUEBU914AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+<div class="q">
+          <p class="q-text">ラッコが補助金込みで200万なら、スライドドアのハイトワゴンじゃない、質感、で言うと補助金込み160~170ぐらいかな? あくまでもラッコを基準とした個人的希望予想。</p>
+          <div class="q-meta">
+            <span>21 likes</span>
+            <span>E-CarLife with 五味やすたか</span>
+            <a href="https://www.youtube.com/watch?v=attF92rgwVw&lc=UgzF6dt9yghpiCpaqFR4AaABAg" target="_blank" rel="noopener">open on YouTube ↗</a>
+          </div>
+        </div>
+
+
+
+<h2>Method, and what it gets wrong</h2>
+<div class="note">
+  <b>This is not a poll.</b> People who comment are not people who buy, and
+  they skew toward enthusiasts and toward strong opinions. This measures
+  what the comment section thinks, which is a proxy for public perception
+  and a poor proxy for sales.
+  <br><br>
+  <b>Sentiment is scored by machine and sampled.</b> Comments are grouped by
+  meaning, then a multilingual model scores a sample from each group.
+  Sarcasm detection is weak, especially in Japanese — where a group reads as
+  sarcastic, its score is flagged rather than quoted as fact.
+  <br><br>
+  <b>Nothing was written by hand.</b> The clusters, counts and quotes come
+  from the pipeline. Quotes are checked against the stored corpus before
+  publication, so a paraphrase cannot reach a graphic.
+</div>
+
+<footer>
+  Suzuki e Sky · 2,948 comments from 20 videos ·
+  fetched 2026-09-17 ·
+  generated 2026-09-17<br>
+  Raw data and the code that produced this are available on request.
+</footer>
+</div></body></html>
