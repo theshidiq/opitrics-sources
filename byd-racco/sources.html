@@ -117,37 +117,80 @@ blockquote .src a:hover{text-decoration:underline}
    The car's own figures, each beside what the comment section said
    about it. A spec row and a comment count sit in the same block
    deliberately: the point is the pairing, not the table. */
-.specgroup{margin:26px 0 0}
-.specgroup>h3{font-size:12px;font-family:ui-monospace,monospace;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 10px;padding-bottom:7px;border-bottom:1px solid var(--hair)}
-.spec{border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
-.spec-top{display:flex;justify-content:space-between;gap:16px;
-  align-items:baseline;flex-wrap:wrap}
-.spec-label{font-size:15px;color:var(--ink-2)}
-.spec-value{font-family:ui-monospace,monospace;font-size:19px;
-  font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
-.spec-note{font-size:13px;color:var(--ink-3);margin:7px 0 0}
-.spec-src{font-family:ui-monospace,monospace;font-size:11px;
-  color:var(--ink-3);margin-top:8px}
-.spec-src a{color:var(--accent);text-decoration:none}
-.spec-src a:hover{text-decoration:underline}
-.spec-said{border-top:1px solid var(--hair);margin-top:11px;padding-top:10px}
-.spec-said .hd{font-family:ui-monospace,monospace;font-size:10.5px;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 7px}
-.spec-said ul{list-style:none;padding:0;margin:0}
-.spec-said li{font-size:14.5px;color:var(--ink-2);padding:3px 0}
-.spec-said li a{color:var(--accent);text-decoration:none}
-.spec-said li a:hover{text-decoration:underline}
-.spec-said .n{font-family:ui-monospace,monospace;font-size:12px;
-  color:var(--ink-3)}
-.spec-quiet{font-size:13px;color:var(--ink-3);margin-top:10px;
-  border-top:1px solid var(--hair);padding-top:9px}
+/* One table, not fifteen cards. The card layout ran 3,752px — four
+   and a half phone screens — and eleven of those cards existed only to
+   say nothing discussed this figure, so the four that mattered were
+   buried in repetition. A table puts the discussed rows where they can
+   be found. */
+.spectable{overflow-x:auto;border:1px solid var(--line);margin:20px 0}
+table.spec{width:100%;min-width:560px;border-collapse:collapse;
+  font-size:14.5px;background:var(--card)}
+table.spec caption{white-space:normal}
+table.spec caption{caption-side:top;text-align:left;
+  font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);padding:13px 15px 9px;
+  border-bottom:1px solid var(--line)}
+table.spec th{text-align:left;font-family:ui-monospace,monospace;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:400;padding:11px 15px 9px;
+  border-bottom:1px solid var(--line);white-space:nowrap}
+table.spec td{padding:12px 15px;border-bottom:1px solid var(--hair);
+  vertical-align:top;color:var(--ink-2)}
+table.spec tr:last-child td{border-bottom:none}
+/* The group heading is a row, so the table stays one scroll frame
+   rather than several tables each with their own overflow box. */
+table.spec tr.grp td{background:var(--soft);font-family:ui-monospace,monospace;
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);padding:9px 15px;border-bottom:1px solid var(--line)}
+table.spec td.f{color:var(--ink);white-space:nowrap}
+/* Values wrap, but never mid-figure. `nowrap` here forced "MacPherson
+   strut front, torsion beam rear" onto one line and pushed the column
+   to 388px, which is what made the table overflow at desktop width.
+   `balance` keeps "1,160–1,230 kg" and "22.40 or 35.84 kWh" whole
+   because they contain no spaces a break could land in. */
+table.spec td.v{font-family:ui-monospace,monospace;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums;
+  white-space:normal;text-wrap:balance;min-width:20ch}
+/* The figure itself never breaks, however narrow the column gets: a
+   kerb weight split as "1,160–" / "1,230 kg" reads as two numbers, and
+   this table exists to make figures legible. Only the caveat below it
+   reflows. */
+table.spec td.v>.fig{white-space:nowrap}
+/* ...except a prose value like "MacPherson strut front, torsion beam
+   rear", which has no digits to split and must wrap or it forces the
+   column wider than the phone. Marked at build time, not guessed in
+   CSS. */
+table.spec td.v>.fig.prose{white-space:normal}
+/* Named `caveat`, not `note`: `.note` is the page's callout box, and a
+   spec caveat inheriting it rendered every note as a tinted panel with
+   a left border, which is what made the table taller than the cards it
+   replaced. */
+table.spec .caveat{display:block;font-family:inherit;font-weight:400;
+  font-size:12.5px;color:var(--ink-3);white-space:normal;margin-top:3px;
+  background:none;border:0;padding:0}
+table.spec td.s{white-space:nowrap}
+table.spec td.s a{color:var(--accent);text-decoration:none;
+  font-family:ui-monospace,monospace;font-size:11.5px}
+table.spec td.s a:hover{text-decoration:underline}
+/* Discussed rows read heavier than quiet ones: that contrast is the
+   whole reason for the table. */
+table.spec tr.said td{background:#F8FAFD}
+table.spec td.c{font-size:13.5px}
+table.spec td.c .none{color:var(--ink-3);font-size:13px}
+table.spec td.c a{color:var(--accent);text-decoration:none}
+table.spec td.c a:hover{text-decoration:underline}
+table.spec td.c .n{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);white-space:nowrap}
+table.spec td.c ul{list-style:none;padding:0;margin:0}
+table.spec td.c li{padding:2px 0}
+/* Negative share as a hairline bar: a reader scanning the column sees
+   which figures drew heat without reading a percentage. */
+.heat{display:inline-block;width:40px;height:4px;background:var(--hair);
+  margin-left:7px;vertical-align:middle;position:relative}
+.heat i{display:block;height:4px;background:#A81C19}
 @media(max-width:560px){.toc{columns:1}
   h1{font-size:26px}
-  .wrap{padding:34px 18px 70px}
-  .spec-top{flex-direction:column;gap:2px}}
+  .wrap{padding:34px 18px 70px}}
 </style></head><body><div class="wrap">
 
 <header>

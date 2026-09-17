@@ -122,37 +122,80 @@ blockquote .src a:hover{text-decoration:underline}
    The car's own figures, each beside what the comment section said
    about it. A spec row and a comment count sit in the same block
    deliberately: the point is the pairing, not the table. */
-.specgroup{margin:26px 0 0}
-.specgroup>h3{font-size:12px;font-family:ui-monospace,monospace;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 10px;padding-bottom:7px;border-bottom:1px solid var(--hair)}
-.spec{border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
-.spec-top{display:flex;justify-content:space-between;gap:16px;
-  align-items:baseline;flex-wrap:wrap}
-.spec-label{font-size:15px;color:var(--ink-2)}
-.spec-value{font-family:ui-monospace,monospace;font-size:19px;
-  font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
-.spec-note{font-size:13px;color:var(--ink-3);margin:7px 0 0}
-.spec-src{font-family:ui-monospace,monospace;font-size:11px;
-  color:var(--ink-3);margin-top:8px}
-.spec-src a{color:var(--accent);text-decoration:none}
-.spec-src a:hover{text-decoration:underline}
-.spec-said{border-top:1px solid var(--hair);margin-top:11px;padding-top:10px}
-.spec-said .hd{font-family:ui-monospace,monospace;font-size:10.5px;
-  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
-  margin:0 0 7px}
-.spec-said ul{list-style:none;padding:0;margin:0}
-.spec-said li{font-size:14.5px;color:var(--ink-2);padding:3px 0}
-.spec-said li a{color:var(--accent);text-decoration:none}
-.spec-said li a:hover{text-decoration:underline}
-.spec-said .n{font-family:ui-monospace,monospace;font-size:12px;
-  color:var(--ink-3)}
-.spec-quiet{font-size:13px;color:var(--ink-3);margin-top:10px;
-  border-top:1px solid var(--hair);padding-top:9px}
+/* One table, not fifteen cards. The card layout ran 3,752px — four
+   and a half phone screens — and eleven of those cards existed only to
+   say nothing discussed this figure, so the four that mattered were
+   buried in repetition. A table puts the discussed rows where they can
+   be found. */
+.spectable{overflow-x:auto;border:1px solid var(--line);margin:20px 0}
+table.spec{width:100%;min-width:560px;border-collapse:collapse;
+  font-size:14.5px;background:var(--card)}
+table.spec caption{white-space:normal}
+table.spec caption{caption-side:top;text-align:left;
+  font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);padding:13px 15px 9px;
+  border-bottom:1px solid var(--line)}
+table.spec th{text-align:left;font-family:ui-monospace,monospace;
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:400;padding:11px 15px 9px;
+  border-bottom:1px solid var(--line);white-space:nowrap}
+table.spec td{padding:12px 15px;border-bottom:1px solid var(--hair);
+  vertical-align:top;color:var(--ink-2)}
+table.spec tr:last-child td{border-bottom:none}
+/* The group heading is a row, so the table stays one scroll frame
+   rather than several tables each with their own overflow box. */
+table.spec tr.grp td{background:var(--soft);font-family:ui-monospace,monospace;
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);padding:9px 15px;border-bottom:1px solid var(--line)}
+table.spec td.f{color:var(--ink);white-space:nowrap}
+/* Values wrap, but never mid-figure. `nowrap` here forced "MacPherson
+   strut front, torsion beam rear" onto one line and pushed the column
+   to 388px, which is what made the table overflow at desktop width.
+   `balance` keeps "1,160–1,230 kg" and "22.40 or 35.84 kWh" whole
+   because they contain no spaces a break could land in. */
+table.spec td.v{font-family:ui-monospace,monospace;font-weight:600;
+  color:var(--ink);font-variant-numeric:tabular-nums;
+  white-space:normal;text-wrap:balance;min-width:20ch}
+/* The figure itself never breaks, however narrow the column gets: a
+   kerb weight split as "1,160–" / "1,230 kg" reads as two numbers, and
+   this table exists to make figures legible. Only the caveat below it
+   reflows. */
+table.spec td.v>.fig{white-space:nowrap}
+/* ...except a prose value like "MacPherson strut front, torsion beam
+   rear", which has no digits to split and must wrap or it forces the
+   column wider than the phone. Marked at build time, not guessed in
+   CSS. */
+table.spec td.v>.fig.prose{white-space:normal}
+/* Named `caveat`, not `note`: `.note` is the page's callout box, and a
+   spec caveat inheriting it rendered every note as a tinted panel with
+   a left border, which is what made the table taller than the cards it
+   replaced. */
+table.spec .caveat{display:block;font-family:inherit;font-weight:400;
+  font-size:12.5px;color:var(--ink-3);white-space:normal;margin-top:3px;
+  background:none;border:0;padding:0}
+table.spec td.s{white-space:nowrap}
+table.spec td.s a{color:var(--accent);text-decoration:none;
+  font-family:ui-monospace,monospace;font-size:11.5px}
+table.spec td.s a:hover{text-decoration:underline}
+/* Discussed rows read heavier than quiet ones: that contrast is the
+   whole reason for the table. */
+table.spec tr.said td{background:#F8FAFD}
+table.spec td.c{font-size:13.5px}
+table.spec td.c .none{color:var(--ink-3);font-size:13px}
+table.spec td.c a{color:var(--accent);text-decoration:none}
+table.spec td.c a:hover{text-decoration:underline}
+table.spec td.c .n{font-family:ui-monospace,monospace;font-size:11.5px;
+  color:var(--ink-3);white-space:nowrap}
+table.spec td.c ul{list-style:none;padding:0;margin:0}
+table.spec td.c li{padding:2px 0}
+/* Negative share as a hairline bar: a reader scanning the column sees
+   which figures drew heat without reading a percentage. */
+.heat{display:inline-block;width:40px;height:4px;background:var(--hair);
+  margin-left:7px;vertical-align:middle;position:relative}
+.heat i{display:block;height:4px;background:#A81C19}
 @media(max-width:560px){.toc{columns:1}
   h1{font-size:26px}
-  .wrap{padding:34px 18px 70px}
-  .spec-top{flex-direction:column;gap:2px}}
+  .wrap{padding:34px 18px 70px}}
 </style></head><body><div class="wrap">
 
 <header>
@@ -177,10 +220,39 @@ blockquote .src a:hover{text-decoration:underline}
 <h2>The car itself</h2>
 <p style="color:var(--ink-2);margin:0 0 4px;max-width:66ch">
   What the manufacturer publishes, beside what the comment section made
-  of it. Every figure links to the page it was read from —
-  4 of 15 were raised by commenters at all, and the ones
-  nobody mentioned say so.
+  of it. 4 of 15 figures were raised by commenters at
+  all; the rest show a dash. The bar is the share of that theme reading
+  negative.
 </p>
+<div class="spectable">
+<table class="spec">
+  <caption>Manufacturer figures · 4 of 15 discussed · from BYD Auto Japan, linked per row</caption>
+  <thead><tr><th>figure</th><th>published</th>
+    <th>what the comment section said</th><th>source</th></tr></thead>
+  <tbody>
+<tr class="grp"><td colspan="4">Powertrain</td></tr>
+<tr><td class="f">Motor output</td><td class="v"><span class="fig">47 kW</span><span class="caveat">Rated 25 kW; 160 Nm torque, front-wheel drive, all trims</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Suspension</td><td class="v"><span class="fig prose">MacPherson strut front, torsion beam rear</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Tyres</td><td class="v"><span class="fig">165/65 R15</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr class="grp"><td colspan="4">Battery &amp; charging</td></tr>
+<tr class="said"><td class="f">Battery</td><td class="v"><span class="fig">22.40 or 35.84 kWh</span><span class="caveat">Lithium iron phosphate. 22.40 kWh (200), 35.84 kWh (300Plus and 300Premium)</span></td><td class="c"><ul><li><a href="#theme-1">EV practicality concerns</a><span class="n"> 476<span class="heat" title="61% negative"><i style="width:61%"></i></span></span></li><li><a href="#theme-11">EV charging infrastructure</a><span class="n"> 362<span class="heat" title="40% negative"><i style="width:40%"></i></span></span></li><li><a href="#theme-26">EV skepticism in Japan</a><span class="n"> 316<span class="heat" title="67% negative"><i style="width:67%"></i></span></span></li></ul></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr class="said"><td class="f">Range, WLTC</td><td class="v"><span class="fig">210 or 320 km</span><span class="caveat">210 km (200), 320 km (300Plus and 300Premium)</span></td><td class="c"><ul><li><a href="#theme-16">Real-world range expectations</a><span class="n"> 239<span class="heat" title="47% negative"><i style="width:47%"></i></span></span></li></ul></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr class="said"><td class="f">DC fast charging</td><td class="v"><span class="fig">35.8 or 49.7 kW</span><span class="caveat">CHAdeMO. 35.8 kW (200), 49.7 kW (300Plus and 300Premium)</span></td><td class="c"><ul><li><a href="#theme-16">Real-world range expectations</a><span class="n"> 239<span class="heat" title="47% negative"><i style="width:47%"></i></span></span></li></ul></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Consumption, WLTC</td><td class="v"><span class="fig">120–124 Wh/km</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">V2H and V2L</td><td class="v"><span class="fig prose">Standard on all trims</span><span class="caveat">Vehicle-to-home and vehicle-to-load, both via DC</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr class="grp"><td colspan="4">Body &amp; dimensions</td></tr>
+<tr class="said"><td class="f">Kerb weight</td><td class="v"><span class="fig">1,160–1,230 kg</span><span class="caveat">1,160 kg (200), 1,220 kg (300Plus), 1,230 kg (300Premium)</span></td><td class="c"><ul><li><a href="#theme-35">Heavy weight criticism</a><span class="n"> 340<span class="heat" title="56% negative"><i style="width:56%"></i></span></span></li></ul></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Length × width × height</td><td class="v"><span class="fig">3,395 × 1,475 × 1,800 mm</span><span class="caveat">Within Japan&#x27;s kei class limits of 3,400 × 1,480 mm</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Ground clearance</td><td class="v"><span class="fig">130 mm</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Wheelbase</td><td class="v"><span class="fig">2,520 mm</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr><td class="f">Seats</td><td class="v"><span class="fig">4</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+<tr class="grp"><td colspan="4">Price</td></tr>
+<tr><td class="f">Price, from</td><td class="v"><span class="fig">¥2,145,000</span><span class="caveat">RACCO 200, including tax, before national or local EV subsidy</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/jp/lineup/racco" target="_blank" rel="noopener" title="BYD Auto Japan">check ↗</a></td></tr>
+<tr class="grp"><td colspan="4">Specification</td></tr>
+<tr><td class="f">Power sliding doors</td><td class="v"><span class="fig prose">Both sides, standard</span></td><td class="c"><span class="none">—</span></td><td class="s"><a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf" target="_blank" rel="noopener" title="BYD Auto Japan catalogue">check ↗</a></td></tr>
+  </tbody>
+</table>
+</div>
 <div class="note">
   <b>These are the manufacturer's figures, not ours.</b> They are typed
   in by hand from the pages linked on each row, and nothing here is
@@ -189,156 +261,6 @@ blockquote .src a:hover{text-decoration:underline}
   opinions with permalinks, the specs are claims with sources, and
   deciding between them is the reader's business.
 </div>
-<div class="specgroup"><h3>Powertrain</h3><div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Motor output</span>
-    <span class="spec-value">47 kW</span>
-  </div>
-  <p class="spec-note">Rated 25 kW; 160 Nm torque, front-wheel drive, all trims</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Suspension</span>
-    <span class="spec-value">MacPherson strut front, torsion beam rear</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Tyres</span>
-    <span class="spec-value">165/65 R15</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div></div>
-<div class="specgroup"><h3>Battery &amp; charging</h3><div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Battery</span>
-    <span class="spec-value">22.40 or 35.84 kWh</span>
-  </div>
-  <p class="spec-note">Lithium iron phosphate. 22.40 kWh (200), 35.84 kWh (300Plus and 300Premium)</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <div class="spec-said"><p class="hd">What the comment section said · 1,154 comments</p><ul><li><a href="#theme-1">EV practicality concerns</a> <span class="n">· 476 comments · 61% negative</span></li><li><a href="#theme-11">EV charging infrastructure</a> <span class="n">· 362 comments · 40% negative</span></li><li><a href="#theme-26">EV skepticism in Japan</a> <span class="n">· 316 comments · 67% negative</span></li></ul></div>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Range, WLTC</span>
-    <span class="spec-value">210 or 320 km</span>
-  </div>
-  <p class="spec-note">210 km (200), 320 km (300Plus and 300Premium)</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <div class="spec-said"><p class="hd">What the comment section said · 239 comments</p><ul><li><a href="#theme-16">Real-world range expectations</a> <span class="n">· 239 comments · 47% negative</span></li></ul></div>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">DC fast charging</span>
-    <span class="spec-value">35.8 or 49.7 kW</span>
-  </div>
-  <p class="spec-note">CHAdeMO. 35.8 kW (200), 49.7 kW (300Plus and 300Premium)</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <div class="spec-said"><p class="hd">What the comment section said · 239 comments</p><ul><li><a href="#theme-16">Real-world range expectations</a> <span class="n">· 239 comments · 47% negative</span></li></ul></div>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Consumption, WLTC</span>
-    <span class="spec-value">120–124 Wh/km</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">V2H and V2L</span>
-    <span class="spec-value">Standard on all trims</span>
-  </div>
-  <p class="spec-note">Vehicle-to-home and vehicle-to-load, both via DC</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div></div>
-<div class="specgroup"><h3>Body &amp; dimensions</h3><div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Kerb weight</span>
-    <span class="spec-value">1,160–1,230 kg</span>
-  </div>
-  <p class="spec-note">1,160 kg (200), 1,220 kg (300Plus), 1,230 kg (300Premium)</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <div class="spec-said"><p class="hd">What the comment section said · 340 comments</p><ul><li><a href="#theme-35">Heavy weight criticism</a> <span class="n">· 340 comments · 56% negative</span></li></ul></div>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Length × width × height</span>
-    <span class="spec-value">3,395 × 1,475 × 1,800 mm</span>
-  </div>
-  <p class="spec-note">Within Japan&#x27;s kei class limits of 3,400 × 1,480 mm</p>
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Ground clearance</span>
-    <span class="spec-value">130 mm</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Wheelbase</span>
-    <span class="spec-value">2,520 mm</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div>
-<div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Seats</span>
-    <span class="spec-value">4</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div></div>
-<div class="specgroup"><h3>Price</h3><div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Price, from</span>
-    <span class="spec-value">¥2,145,000</span>
-  </div>
-  <p class="spec-note">RACCO 200, including tax, before national or local EV subsidy</p>
-  <p class="spec-src">via <a href="https://www.byd.com/jp/lineup/racco"
-     target="_blank" rel="noopener">BYD Auto Japan ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div></div>
-<div class="specgroup"><h3>Specification</h3><div class="spec">
-  <div class="spec-top">
-    <span class="spec-label">Power sliding doors</span>
-    <span class="spec-value">Both sides, standard</span>
-  </div>
-  
-  <p class="spec-src">via <a href="https://www.byd.com/material/__CN/byd-site/jp/lineup/racco/catalog/catalog_202607_v2.pdf"
-     target="_blank" rel="noopener">BYD Auto Japan catalogue ↗</a></p>
-  <p class="spec-quiet">Nothing in this corpus discussed this.</p>
-</div></div>
 
 <h2>What people talk about</h2>
 <p style="color:var(--ink-2);margin:0 0 4px;max-width:66ch">
