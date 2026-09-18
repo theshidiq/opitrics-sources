@@ -126,6 +126,11 @@ blockquote .src a:hover{text-decoration:underline}
 table.spec{width:100%;min-width:560px;border-collapse:collapse;
   font-size:14.5px;background:var(--card)}
 table.spec caption{white-space:normal}
+/* With the per-row column gone this is the only route to the source, so
+   it needs to be tappable rather than a 12px-tall line of text. */
+table.spec caption a{color:var(--accent);text-decoration:none;
+  display:inline-block;padding:6px 2px}
+table.spec caption a:hover{text-decoration:underline}
 table.spec caption{caption-side:top;text-align:left;
   font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--ink-3);padding:13px 15px 9px;
