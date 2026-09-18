@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nissan Sakura — discourse briefing</title>
+<meta name="description" content="Where Nissan Sakura discussion catches, and on what: 2,683 comments grouped by subject, with every theme linked to its comments.">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Opitrics">
+<meta property="og:title" content="Nissan Sakura — what the discussion catches on">
+<meta name="twitter:card" content="summary">
+<style>
+:root{--bg:#FFFFFF;--card:#FFFFFF;--line:#BFBFBF;--soft:#F4F4F4;--hair:#E0E0E0;
+  --ink:#000000;--ink-2:#3D3D3D;--ink-3:#5A5A5A;--accent:#0546A8;--ok:#0A5F2F;
+  --warn:#8A5A00;--neg:#A81C19}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",
+  "Hiragino Sans","Noto Sans JP",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:40px 24px 90px}
+a{color:var(--accent)}
+
+/* ── panels ──────────────────────────────────────────────────
+   Each section is one idea with room around it, the way a slide is.
+   Not actual slides: a deck that paginates hides the evidence one
+   click deeper, and the evidence is the product. */
+/* Masthead and the analysis/briefing/sources switch, mirroring the
+   rules in provenance.py so a visitor crossing between the three views
+   of a subject sees no seam. */
+.sitenav{display:flex;align-items:baseline;gap:8px 16px;flex-wrap:wrap;
+  padding-bottom:13px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.sitenav .brand{font-family:ui-monospace,monospace;font-size:12px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  text-decoration:none;font-weight:600}
+.sitenav .brand:hover{color:var(--accent)}
+.sitenav nav{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
+.sitenav nav a{font-size:13.5px;color:var(--ink-3);text-decoration:none}
+.sitenav nav a:hover{color:var(--accent)}
+.sitenav nav a[aria-current]{color:var(--ink);font-weight:600}
+.views{display:flex;gap:0;margin:0 0 8px;border:1px solid var(--line)}
+.views a{flex:1;padding:10px 14px;font-size:13.5px;text-decoration:none;
+  color:var(--accent);border-right:1px solid var(--line)}
+.views a:last-child{border-right:0}
+.views a:hover{background:var(--soft)}
+.views a[aria-current]{background:var(--soft);color:var(--ink);
+  font-weight:600;cursor:default}
+.views b{display:block;font-size:13.5px}
+.views span{display:block;font-size:12px;color:var(--ink-3);
+  font-weight:400;margin-top:2px}
+
+.panel{padding:44px 0;border-top:1px solid var(--line)}
+.panel:first-of-type{border-top:0;padding-top:16px}
+.kicker{font-family:ui-monospace,monospace;font-size:11px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+  margin:0 0 12px}
+.panel h2{font-size:30px;line-height:1.14;letter-spacing:-.02em;
+  margin:0 0 14px;max-width:20ch}
+.panel h2.wide{max-width:28ch}
+.panel p.say{font-size:17px;color:var(--ink-2);margin:0 0 6px;max-width:64ch}
+.panel p.qual{font-size:14px;color:var(--ink-3);margin:10px 0 0;max-width:64ch}
+
+/* The one number a panel exists to deliver. */
+.huge{font-family:ui-monospace,monospace;font-size:clamp(52px,11vw,104px);
+  line-height:.95;letter-spacing:-.04em;font-variant-numeric:tabular-nums;
+  margin:18px 0 6px;display:block}
+.huge small{display:block;font-family:inherit;font-size:14px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  margin-top:12px}
+
+/* ── shape bar: what the corpus is about ─────────────────── */
+.shape{display:flex;height:46px;margin:24px 0 14px;overflow:hidden;
+  border:1px solid var(--line)}
+.shape i{display:block;position:relative;border-right:1px solid #FFFFFF}
+.shape i:last-child{border-right:0}
+.shape .k{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;font-family:ui-monospace,monospace;font-size:12px;
+  color:#FFFFFF;font-weight:600}
+.shapekey{display:flex;gap:8px 18px;flex-wrap:wrap;margin:0 0 4px;
+  font-size:13.5px;color:var(--ink-2)}
+.shapekey span{display:flex;align-items:center;gap:7px}
+.shapekey b{width:11px;height:11px;display:inline-block}
+
+/* ── friction rows ───────────────────────────────────────── */
+.rows{margin:22px 0 0;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 128px 92px;gap:18px;
+  align-items:center;padding:15px 0;border-bottom:1px solid var(--hair)}
+.row .t{min-width:0}
+.row .t a{font-size:16.5px;font-weight:600;text-decoration:none;
+  display:block;line-height:1.3}
+.row .t a:hover{text-decoration:underline}
+.row .t .sub{font-size:13.5px;color:var(--ink-3);margin-top:3px}
+.row .bar{height:9px;background:var(--hair);position:relative}
+.row .bar i{display:block;height:9px;background:var(--neg)}
+.row .num{font-family:ui-monospace,monospace;font-size:14px;
+  text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2);
+  white-space:nowrap}
+.row .num b{display:block;font-size:19px;color:var(--ink)}
+.tag{display:inline-block;font-family:ui-monospace,monospace;font-size:10px;
+  letter-spacing:.07em;text-transform:uppercase;border:1px solid var(--line);
+  padding:1px 6px;color:var(--ink-3);margin-left:7px;vertical-align:middle}
+.tag.warn{border-color:var(--warn);color:var(--warn)}
+
+/* ── two-up split ────────────────────────────────────────── */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border:1px solid var(--line);margin:24px 0 0}
+.split>div{padding:22px 24px;border-right:1px solid var(--line)}
+.split>div:last-child{border-right:0}
+.split h3{font-family:ui-monospace,monospace;font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;margin:0 0 4px}
+.split .n{font-family:ui-monospace,monospace;font-size:38px;
+  font-variant-numeric:tabular-nums;line-height:1.1;margin:6px 0 2px}
+.split p{font-size:14px;color:var(--ink-3);margin:6px 0 0}
+.split ul{list-style:none;padding:0;margin:14px 0 0}
+.split li{font-size:14.5px;padding:5px 0;border-top:1px solid var(--hair);
+  color:var(--ink-2)}
+.split li a{text-decoration:none}
+.split li a:hover{text-decoration:underline}
+.split li .c{font-family:ui-monospace,monospace;font-size:12px;
+  color:var(--ink-3)}
+
+/* ── caveat, and the line this page will not cross ───────── */
+.guard{border:2px solid var(--ink);padding:22px 24px;margin:30px 0 0}
+.guard h3{font-size:17px;margin:0 0 10px}
+.guard p{font-size:14.5px;color:var(--ink-2);margin:0 0 9px;max-width:68ch}
+.guard p:last-child{margin-bottom:0}
+.guard .no{color:var(--neg);font-weight:600}
+.guard .yes{color:var(--ok);font-weight:600}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);
+  color:var(--ink-3);font-size:13.5px}
+footer a{color:var(--accent)}
+
+@media(max-width:620px){
+  .wrap{padding:30px 18px 70px}
+  .sitenav nav{margin-left:0;width:100%}
+  .views{flex-direction:column}
+  .views a{border-right:0;border-bottom:1px solid var(--line)}
+  .views a:last-child{border-bottom:0}
+  .panel{padding:34px 0}
+  .panel h2{font-size:25px}
+  .row{grid-template-columns:1fr 78px;gap:12px}
+  .row .bar{grid-column:1/-1;order:3}
+  .split{grid-template-columns:1fr}
+  .split>div{border-right:0;border-bottom:1px solid var(--line)}
+  .split>div:last-child{border-bottom:0}
+}
+</style></head><body><div class="wrap">
+<div class="sitenav">
+  <a class="brand" href="/">Opitrics</a>
+  <nav>
+    <a href="/">All analyses</a>
+    <a href="/compare/">Compared</a>
+    <a href="/terms">Terms</a>
+    <a href="/privacy">Privacy</a>
+  </nav>
+</div>
+<div class="views">
+  <a href="/nissan-sakura/"><b>The analysis</b><span>Themes, charts and what the comment section said</span></a>
+  <a aria-current="page"><b>The briefing</b><span>Where the discussion catches, and on what</span></a>
+  <a href="/nissan-sakura/sources.html"><b>The sources</b><span>Every video read and every quote, with permalinks</span></a>
+</div>
+<section class="panel">
+  <p class="kicker">Discourse briefing · Nissan Sakura</p>
+  <h2 class="wide">Where the conversation catches, and on what</h2>
+  <p class="say">36% of Nissan Sakura discussion is about ownership & cost — 979 of 2,683 comments.</p>
+  <p class="say">32% concerns attributes a product team could change; the rest is brand, price and context.</p>
+  <p class="qual">
+    2,683 comments about the car, from 16 videos,
+    fetched 2026-09-17. Every theme below
+    links to the comments behind it.
+  </p>
+</section>
+
+<section class="panel">
+  <p class="kicker">What it is about</p>
+  <h2>The subject mix decides the brief</h2>
+  <p class="say">
+    Grouped by subject, largest first. A corpus dominated by design
+    produces a different brief from one dominated by brand — and no
+    amount of engineering moves the second.
+  </p>
+  <div class="shape"><i style="width:36.49%;background:#0546A8"><span class="k">36%</span></i><i style="width:23.85%;background:#3D3D3D"><span class="k">24%</span></i><i style="width:21.02%;background:#5A5A5A"><span class="k">21%</span></i><i style="width:7.42%;background:#8A8A8A"></i><i style="width:4.88%;background:#BFBFBF"></i><i style="width:6.34%;background:#E0E0E0"></i></div><div class="shapekey"><span><b style="background:#0546A8"></b>Ownership &amp; cost <span style='color:var(--ink-3)'>979</span></span><span><b style="background:#3D3D3D"></b>Commercial <span style='color:var(--ink-3)'>640</span></span><span><b style="background:#5A5A5A"></b>Driving <span style='color:var(--ink-3)'>564</span></span><span><b style="background:#8A8A8A"></b>Brand &amp; origin <span style='color:var(--ink-3)'>199</span></span><span><b style="background:#BFBFBF"></b>Design <span style='color:var(--ink-3)'>131</span></span><span><b style="background:#E0E0E0"></b>Other <span style='color:var(--ink-3)'>170</span></span></div>
+  <p class="qual">Shares of the 2,683 comments about the car.
+  Comments about the video or its presenter are excluded.</p>
+</section>
+
+<section class="panel">
+  <p class="kicker">Addressable or not</p>
+  <h2>Two different kinds of friction</h2>
+  <div class="split">
+    <div>
+      <h3 style="color:var(--accent)">A product team could act</h3>
+      <div class="n">32%</div>
+      <p>865 comments on build, design, driving, practicality,
+      features and EV behaviour.</p>
+    </div>
+    <div>
+      <h3>Only communication reaches</h3>
+      <div class="n">68%</div>
+      <p>1,818 comments on brand, origin, price and ownership
+      context — conditions rather than defects.</p>
+    </div>
+  </div>
+  <p class="qual">A car's country of manufacture is not a product
+  decision. Treating brand discourse as a defect backlog is the error
+  this split exists to prevent.</p>
+</section>
+
+<section class="panel">
+  <p class="kicker">Product friction</p>
+  <h2>Where the product itself draws criticism</h2>
+  <p class="say">
+    Ranked by how many comments in each theme read negative — volume
+    times negative share, not a severity score. Bar length is that
+    figure relative to the loudest theme on the page.
+  </p>
+  <div class="rows"><div class="row"><div class="t"><a href="/nissan-sakura/#theme-7">Pedal misapplication fears</a><span class="tag warn">sarcasm risk</span><div class="sub">crash safety · 13 channels · 446 likes</div></div><div class="bar"><i style="width:100%"></i></div><div class="num"><b>120</b>80% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-17">Charging hassle and range anxiety</a><div class="sub">ride comfort · 11 channels · 304 likes</div></div><div class="bar"><i style="width:64%"></i></div><div class="num"><b>79</b>78% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-14">Acceleration and brand image complaints</a><span class="tag warn">sarcasm risk</span><div class="sub">power &amp; acceleration · 10 channels · 553 likes</div></div><div class="bar"><i style="width:58%"></i></div><div class="num"><b>66</b>85% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-39">Kei car expectations and road noise</a><div class="sub">quietness · 12 channels · 257 likes</div></div><div class="bar"><i style="width:47%"></i></div><div class="num"><b>85</b>53% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-21">Headlight height and model comparisons</a><div class="sub">exterior styling · 13 channels · 263 likes</div></div><div class="bar"><i style="width:17%"></i></div><div class="num"><b>63</b>26% neg</div></div></div>
+</section>
+
+<section class="panel">
+  <p class="kicker">Context friction</p>
+  <h2>What no product change would move</h2>
+  <p class="say">
+    The same measure, for themes about brand, origin, price and
+    ownership. These are the arguments a team can answer but not
+    engineer away.
+  </p>
+  <div class="rows"><div class="row"><div class="t"><a href="/nissan-sakura/#theme-8">EV charging infrastructure complaints</a><div class="sub">running cost · 10 channels · 664 likes</div></div><div class="bar"><i style="width:97%"></i></div><div class="num"><b>121</b>77% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-37">EV push and infrastructure gaps</a><div class="sub">brand trust · 11 channels · 1,152 likes</div></div><div class="bar"><i style="width:66%"></i></div><div class="num"><b>93</b>69% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-11">EVs unsuited to Japan</a><div class="sub">durability &amp; rust · 10 channels · 603 likes</div></div><div class="bar"><i style="width:60%"></i></div><div class="num"><b>99</b>58% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-13">Nissan&#x27;s comeback and rivals</a><div class="sub">domestic industry · 12 channels · 120 likes</div></div><div class="bar"><i style="width:58%"></i></div><div class="num"><b>106</b>53% neg</div></div><div class="row"><div class="t"><a href="/nissan-sakura/#theme-31">EV subsidy unfairness anger</a><div class="sub">subsidies &amp; incentives · 10 channels · 2,539 likes</div></div><div class="bar"><i style="width:57%"></i></div><div class="num"><b>80</b>69% neg</div></div></div>
+</section>
+
+<section class="panel">
+  <p class="kicker">The other half</p>
+  <h2>What is working, and what travels</h2>
+  <div class="split">
+    <div>
+      <h3 style="color:var(--ok)">Reads positive</h3>
+      <p>Themes where approval outweighs criticism — what not to
+      break.</p>
+      <ul><li><a href="/nissan-sakura/#theme-15">Surprisingly refined kei ride quality</a> <span class="c">69</span></li><li><a href="/nissan-sakura/#theme-28">Light EV torque and acceleration surprise</a> <span class="c">86</span></li><li><a href="/nissan-sakura/#theme-29">Sakura price and value praise</a> <span class="c">90</span></li><li><a href="/nissan-sakura/#theme-3">Sakura as second car</a> <span class="c">102</span></li></ul>
+    </div>
+    <div>
+      <h3>Travels furthest</h3>
+      <p>Highest likes per comment among themes of 50+. Reach, not
+      volume.</p>
+      <ul><li><a href="/nissan-sakura/#theme-31">EV subsidy unfairness anger</a> <span class="c">32 likes/comment</span></li><li><a href="/nissan-sakura/#theme-36">Battery degradation and replacement cost fears</a> <span class="c">29 likes/comment</span></li><li><a href="/nissan-sakura/#theme-19">Power grid strain and EV policy distrust</a> <span class="c">27 likes/comment</span></li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <p class="kicker">Read this correctly</p>
+  <h2 class="wide">What this measures, and what it does not</h2>
+  <div class="guard">
+    <h3>Commenters are not buyers.</h3>
+    <p><span class="yes">This says</span> which attributes generate
+    friction in public discussion, at what volume and intensity, with
+    every figure traceable to comments you can open.</p>
+    <p><span class="no">This does not say</span> whether the car will
+    sell, how demand is moving, or what the market will do. People who
+    comment skew toward enthusiasts and strong opinions, and nothing
+    here surveys a buyer. A decision that needs demand data needs
+    demand data.</p>
+    <p>Sentiment is machine-scored on a sample of each theme, and
+    sarcasm detection is weak in Japanese — themes at risk are flagged
+    on the rows above rather than quietly scored. Counts are from the
+    fetch date and drift afterwards.</p>
+  </div>
+  <p class="qual">Same analysis for <a href="/byd-racco/brief/">BYD Racco</a> · <a href="/suzuki-e-sky/brief/">Suzuki e Sky</a> · <a href="/honda-n-box/brief/">Honda N-Box</a> · <a href="/compare/">all four compared</a></p>
+</section>
+
+<footer>
+  Nissan Sakura · 2,683 comments about the car ·
+  fetched 2026-09-17<br>
+  <a href="/nissan-sakura/">The full analysis</a> ·
+  <a href="/nissan-sakura/sources.html">Every quote with its permalink</a> ·
+  <a href="/compare/">Compared</a> ·
+  <a href="/">All analyses</a><br>
+  Comment authors are not named. Spotted an error?
+  <a href="mailto:info@opitrics.com">info@opitrics.com</a>
+</footer>
+</div></body></html>
