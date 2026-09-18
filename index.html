@@ -42,6 +42,22 @@ ul.plain li:before{content:"—";position:absolute;left:0;color:#5A5A5A}
 .updated{font-family:ui-monospace,monospace;font-size:12px;color:#5A5A5A;
  letter-spacing:.06em;text-transform:uppercase}
 
+/* Masthead. Mirrors the .sitenav rules in opitrics/render/provenance.py
+   so every page on the domain carries the same one — these pages are
+   built here and the subject reports are built there, but a visitor
+   crossing between them should not notice a seam. */
+.sitenav{display:flex;align-items:baseline;gap:8px 16px;flex-wrap:wrap;
+ padding-bottom:13px;margin-bottom:22px;border-bottom:1px solid #BFBFBF}
+.sitenav .brand{font-family:ui-monospace,monospace;font-size:12px;
+ letter-spacing:.16em;text-transform:uppercase;color:#000000;
+ text-decoration:none;font-weight:600}
+.sitenav .brand:hover{color:#0546A8}
+.sitenav nav{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto}
+.sitenav nav a{font-size:13.5px;color:#5A5A5A;text-decoration:none}
+.sitenav nav a:hover{color:#0546A8}
+.sitenav nav a[aria-current]{color:#000000;font-weight:600}
+@media(max-width:560px){.sitenav nav{margin-left:0;width:100%}}
+
 /* ── comparison ─────────────────────────────────────────────
    The four-way table scrolls inside its own box rather than
    widening the page: five columns of figures cannot compress to
@@ -80,6 +96,15 @@ footer p{color:inherit;margin:0 0 10px;max-width:62ch}
 footer p:last-child{margin-bottom:0}
 footer a{color:#0546A8}
 </style></head><body><div class="wrap">
+<div class="sitenav">
+  <a class="brand" href="/">Opitrics</a>
+  <nav>
+    <a href="/" aria-current="page">All analyses</a>
+    <a href="/compare/">Compared</a>
+    <a href="/terms">Terms</a>
+    <a href="/privacy">Privacy</a>
+  </nav>
+</div>
 <h1>Opitrics — sources</h1>
 <p>Every comment analysis published under this name has a page here listing
 the videos it read and every comment it quoted, each linking to the original
