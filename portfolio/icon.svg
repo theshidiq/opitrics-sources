@@ -1,34 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Portfolio mark">
   <title>Kamal Abdul Shidiq</title>
   <!--
-    A bar chart whose third column is a person: a round head above a body,
-    standing taller than the surrounding data.
+    A dot over a line, with three bars climbing to the right. The bars'
+    sloped tops line up into one continuous rising edge, so the mark reads
+    as a trend line and a bar chart at once.
 
-    Tuned for 16px, where the mark mostly lives. The head is a circle wider
-    than the body, separated by a gap, so it reads as a head at a glance
-    rather than merging into one bar. The single curve in an otherwise
-    square mark is what makes it read as a person. The data columns are muted rather than
-    full contrast, so the figure stays the focal point.
+    The stem carries the accent and the bars are muted, so the eye lands on
+    the figure first and the data reads as its context.
 
-    A favicon cannot read the page's data-theme, so it follows the system
+    A favicon cannot read the page data-theme, so it follows the system
     scheme using the site's own tokens.
   -->
   <style>
+    .stem { fill: #b4451f; }
     .bar  { fill: #5c5852; }
-    .self { fill: #b4451f; }
     @media (prefers-color-scheme: dark) {
+      .stem { fill: #f0865a; }
       .bar  { fill: #a8a49c; }
-      .self { fill: #f0865a; }
     }
   </style>
 
-  <!-- data columns -->
-  <rect class="bar"  x="2"  y="19" width="6" height="11"/>
-  <rect class="bar"  x="10" y="15" width="6" height="15"/>
+  <!-- stem: dot over line -->
+  <circle class="stem" cx="7" cy="4.5" r="3.5"/>
+  <rect   class="stem" x="4" y="11" width="6" height="19"/>
 
-  <!-- the person: round head, gap, body -->
-  <circle class="self" cx="21" cy="6" r="4"/>
-  <rect   class="self" x="18" y="12" width="6" height="18"/>
-
-  <rect class="bar"  x="26" y="17" width="4" height="13"/>
+  <!-- three bars whose sloped tops form a single rising edge -->
+  <polygon class="bar" points="13,30 13,22 18,18 18,30"/>
+  <polygon class="bar" points="20,30 20,17 25,13 25,30"/>
+  <polygon class="bar" points="27,30 27,12 32,8 32,30"/>
 </svg>
